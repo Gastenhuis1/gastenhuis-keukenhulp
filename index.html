@@ -627,6 +627,16 @@ main{
   }
 }
 
+
+/* V55: extra bestelcategorie bij receptingrediënten */
+.ingRow{
+  grid-template-columns:minmax(180px,2fr) minmax(90px,.7fr) minmax(95px,.7fr) minmax(155px,1.2fr) minmax(120px,1fr) auto !important;
+}
+@media(max-width:900px){
+  .ingRow{grid-template-columns:1fr 1fr !important}
+  .ingRow .wide{grid-column:1/-1}
+}
+
 </style>
 </head>
 <body>
@@ -760,6 +770,7 @@ let library=JSON.parse(localStorage.getItem('gh39_library')||'null')||JSON.parse
 let customRecipes=JSON.parse(localStorage.getItem('gh39_customRecipes')||'{}');
 let itemMeta=JSON.parse(localStorage.getItem('gh39_itemMeta')||'{}');
 let ingredientSuppliers=JSON.parse(localStorage.getItem('gh39_ingredientSuppliers')||'{}');
+let ingredientOrderCategories={};
 Object.assign(recipes,customRecipes);
 
 const SUPABASE_URL='https://cttotbzkcluauzzgnybh.supabase.co';
@@ -799,7 +810,10 @@ async function loadCentralItems(){
     itemMeta[id]={menuName:r.menu_name||r.name,type:'recipe'};
     const parts=(ris||[]).filter(i=>+i.recipe_id===+r.id).map(i=>[i.ingredient_name,+i.quantity,i.unit]);
     recipes[id]=parts;
-    (ris||[]).filter(i=>+i.recipe_id===+r.id).forEach(i=>ingredientSuppliers[i.ingredient_name.toLowerCase()]=i.supplier||'AH');
+    (ris||[]).filter(i=>+i.recipe_id===+r.id).forEach(i=>{
+      ingredientSuppliers[i.ingredient_name.toLowerCase()]=i.supplier||'AH';
+      if(i.order_category) ingredientOrderCategories[i.ingredient_name.toLowerCase()]=i.order_category;
+    });
   });
   const seen=new Set();
   library=[...localBase,...added].filter(x=>{const k=x.cat+'|'+x.name.toLowerCase();if(seen.has(k))return false;seen.add(k);return true});
@@ -1049,6 +1063,7 @@ const ahSections=[
 ];
 function ahCategory(name){
  let n=name.toLowerCase();
+ if(ingredientOrderCategories[n]) return ingredientOrderCategories[n];
  const has=(...a)=>a.some(x=>n.includes(x));
  if(has('broccoli','bloemkool','sperzie','snijboon','wortel','worteltjes','prei','ui','champignon','sla','komkommer','tomaat','paprika','courgette','spinazie','spitskool','biet','doperwt','mais','rauwkost','gemengde groenten','fruit','appel','peer','banaan','druif','aardbei','framboos','citroen','sinaasappel','mandarijn','meloen','ananas')) return 'groente';
  if(has('kip','kippendij','gehakt','blinde vink','schnitzel','braadworst','vis','zalm','kabeljauw','tonijn','garnaal','vegetarisch gehakt','vega','falafel','burger')) return 'vleesvis';
@@ -1226,6 +1241,16 @@ function addIngredientRow(){
  row.innerHTML=`<div class="wide"><label>Ingrediënt</label><input class="iName" placeholder="bijv. Slagroom"></div>
  <div><label>Hoeveelheid</label><input class="iQty" type="number" min="0" step="0.01"></div>
  <div><label>Eenheid</label><select class="iUnit"><option>g</option><option>ml</option><option>stuk</option><option>liter</option><option>pak</option><option>zak</option><option>blik</option><option>pot</option></select></div>
+ <div><label>Bestelcategorie</label><select class="iOrderCat">
+   <option value="groente">Groente & fruit</option>
+   <option value="vleesvis">Vlees, vis & vega</option>
+   <option value="zetmeel">Aardappelen, rijst & pasta</option>
+   <option value="zuivel">Zuivel & gekoeld</option>
+   <option value="houdbaar">Houdbaar & koken</option>
+   <option value="diepvries">Diepvries</option>
+   <option value="brood">Brood & lunch</option>
+   <option value="overig">Overig</option>
+ </select></div>
  <div><label>Leverancier</label><select class="iSupplier"><option>AH</option><option>Sligro</option></select></div>
  <button type="button" class="secondary" onclick="this.parentElement.remove()">×</button>`;
  document.getElementById('ingRows').appendChild(row);
@@ -1235,6 +1260,7 @@ function readIngredientRows(){
    name:r.querySelector('.iName').value.trim(),
    qty:+r.querySelector('.iQty').value||0,
    unit:r.querySelector('.iUnit').value,
+   orderCategory:r.querySelector('.iOrderCat').value,
    supplier:r.querySelector('.iSupplier').value
  })).filter(x=>x.name&&x.qty>0)
 }
@@ -1254,10 +1280,10 @@ async function saveManagedItem(){
      const rid=rr?.[0]?.id;if(!rid)throw new Error('Recept-id ontbreekt');
      let ingredients=[];
      if(type==='package'){
-       ingredients.push({recipe_id:rid,ingredient_name:name,quantity:1/yieldN,unit:'stuk',supplier});
-       rows.forEach(x=>ingredients.push({recipe_id:rid,ingredient_name:x.name,quantity:(x.unit==='liter'?x.qty*1000:x.qty)/yieldN,unit:x.unit==='liter'?'ml':x.unit,supplier:x.supplier}));
+       ingredients.push({recipe_id:rid,ingredient_name:name,quantity:1/yieldN,unit:'stuk',supplier,order_category:'overig'});
+       rows.forEach(x=>ingredients.push({recipe_id:rid,ingredient_name:x.name,quantity:(x.unit==='liter'?x.qty*1000:x.qty)/yieldN,unit:x.unit==='liter'?'ml':x.unit,supplier:x.supplier,order_category:x.orderCategory}));
      }else{
-       ingredients=rows.map(x=>({recipe_id:rid,ingredient_name:x.name,quantity:x.qty,unit:x.unit,supplier:x.supplier}));
+       ingredients=rows.map(x=>({recipe_id:rid,ingredient_name:x.name,quantity:x.qty,unit:x.unit,supplier:x.supplier,order_category:x.orderCategory}));
      }
      if(ingredients.length)await sb('recipe_ingredients',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(ingredients)});
    }
