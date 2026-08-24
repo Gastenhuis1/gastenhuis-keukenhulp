@@ -531,15 +531,95 @@ main{padding-top:14px}
     margin-left:12px !important;
   }
 }
+
+/* V52 FULL: compacte bovenkant op echte HTML-structuur */
+.appHeader{
+  position:sticky!important;
+  top:0!important;
+  z-index:4!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:5px 16px 3px!important;
+  margin:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:#fffaf3!important;
+  border-bottom:1px solid var(--line)!important;
+}
+.appHeader .appLogo{
+  display:block!important;
+  width:92px!important;
+  height:30px!important;
+  max-width:92px!important;
+  max-height:30px!important;
+  object-fit:contain!important;
+  margin:0!important;
+}
+main{padding-top:6px!important}
+#weekView>.sectionTitle{
+  width:min(980px,calc(100% - 32px))!important;
+  margin:2px auto 0!important;
+  min-height:40px!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:center!important;
+  position:relative!important;
+  text-align:center!important;
+}
+#weekView>.sectionTitle>div{
+  width:auto!important;
+  flex:0 1 auto!important;
+  text-align:center!important;
+}
+#weekView>.sectionTitle h2{
+  margin:0!important;
+  font-size:23px!important;
+}
+#weekView>.sectionTitle>.secondary{
+  position:absolute!important;
+  right:0!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  margin:0!important;
+}
+#weekView>.sharedStatus{display:none!important}
+#week .daytabs{
+  width:max-content!important;
+  max-width:100%!important;
+  margin:3px auto 5px!important;
+  justify-content:center!important;
+}
+#week .dayLegend{display:none!important}
+#week .daytitle{
+  width:100%!important;
+  text-align:center!important;
+  margin:0 auto 8px!important;
+}
+@media(max-width:700px){
+  .appHeader .appLogo{width:82px!important;height:27px!important}
+  #weekView>.sectionTitle{
+    min-height:74px!important;
+    padding-bottom:34px!important;
+  }
+  #weekView>.sectionTitle>.secondary{
+    top:auto!important;
+    bottom:0!important;
+    right:50%!important;
+    transform:translateX(50%)!important;
+  }
+  #week .daytabs{
+    width:100%!important;
+    justify-content:flex-start!important;
+    overflow-x:auto!important;
+  }
+}
+
 </style>
 </head>
 <body>
-<header class="appHeader">
-  <div class="brand">
-    <img src="gastenhuis-logo.png" alt="Het Gastenhuis">
-    <div class="brandText"><h1>Keukenhulp</h1></div>
-  </div>
-</header>
+<header class="appHeader"><img class="appLogo" src="gastenhuis-logo.png" alt="Het Gastenhuis"></header>
 <main>
 <section id="weekView" class="view active">
  <div class="sectionTitle"><div><h2>🍽️ Menu maken</h2></div><button class="secondary" onclick="resetWeek()">Nieuwe week</button></div><div class="sharedStatus"><span id="syncDot" class="syncDot"></span><span id="syncText">Verbinding met centrale database controleren…</span></div><div id="week" class="weekgrid"></div>
