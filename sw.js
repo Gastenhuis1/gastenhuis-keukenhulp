@@ -1,4 +1,4 @@
-const C='gh-keuken-online-v53';
+const C='gh-keuken-online-v54';
 const STATIC=['./manifest.json','./gastenhuis-logo.png'];
 
 self.addEventListener('install',event=>{
