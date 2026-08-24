@@ -305,6 +305,54 @@ header .brandText{text-align:center}
     overflow-x:auto !important;
   }
 }
+
+/* V48: one centered top stack */
+#weekView > .sectionTitle{
+  width:min(980px,calc(100% - 32px)) !important;
+  margin:0 auto !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  gap:8px !important;
+}
+#weekView > .sectionTitle > div{
+  width:100% !important;
+  text-align:center !important;
+}
+#weekView > .sectionTitle > button{
+  margin:0 auto !important;
+}
+#weekView > .sectionTitle + .small{
+  width:min(980px,calc(100% - 32px)) !important;
+  margin:0 auto 6px !important;
+  text-align:center !important;
+}
+#weekView > .sharedStatus{
+  width:min(980px,calc(100% - 32px)) !important;
+  margin:8px auto 14px !important;
+  justify-content:center !important;
+  text-align:center !important;
+}
+#weekView > #week{
+  width:min(980px,calc(100% - 32px)) !important;
+  margin:0 auto !important;
+}
+#week .daytabs{
+  width:max-content !important;
+  max-width:100% !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  justify-content:center !important;
+}
+#week .dayLegend,
+#week .daytitle{
+  width:100% !important;
+  text-align:center !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
 </style>
 </head>
 <body>
@@ -312,7 +360,7 @@ header .brandText{text-align:center}
 <main>
 <section id="weekView" class="view active">
  <div class="sectionTitle"><div><h2>🍽️ Menu maken</h2><div class="small">Kies een dag en stel lunch, diner en dessert samen.</div></div><button class="secondary" onclick="resetWeek()">Nieuwe week</button></div>
- <div class="small" style="margin:-4px 0 6px">Tik op Ma–Zo om van dag te wisselen. ✓ betekent alleen dat die dag compleet is.</div><div class="sharedStatus"><span id="syncDot" class="syncDot"></span><span id="syncText">Centrale gegevens laden…</span></div><div id="week" class="weekgrid"></div>
+ <div class="small" style="margin:-4px 0 6px">Tik op Ma–Zo om van dag te wisselen. ✓ betekent alleen dat die dag compleet is.</div><div class="sharedStatus"><span id="syncDot" class="syncDot"></span><span id="syncText">Verbinding met centrale database controleren…</span></div><div id="week" class="weekgrid"></div>
 </section>
 
 
@@ -444,7 +492,7 @@ const SUPABASE_KEY='sb_publishable_k3vjLo3RzAfyi8mhz7ppKA_9Y1XxRTX';
 const SB_HEADERS={'apikey':SUPABASE_KEY,'Content-Type':'application/json'};
 async function sb(path,options={}){
   const r=await fetch(SUPABASE_URL+'/rest/v1/'+path,{...options,headers:{...SB_HEADERS,...(options.headers||{})}});
-  if(!r.ok)throw new Error(await r.text());
+  if(!r.ok){const msg=await r.text();throw new Error(`${r.status} ${r.statusText}: ${msg}`);}
   if(r.status===204)return null;
   const txt=await r.text(); return txt?JSON.parse(txt):null;
 }
@@ -507,7 +555,7 @@ async function loadCentralWeek(){
     week[day]=s;
   });
   localStorage.setItem('gh29_week',JSON.stringify(week));drawWeek();drawOrders();drawPrep();drawMenu();
-  setSync('Verbonden · menuweek centraal geladen',true);
+  setSync(rows?.length ? 'Verbonden · menuweek centraal geladen' : 'Verbonden · centrale database bereikbaar',true);
  }catch(e){console.error(e);setSync('Centrale menuweek kon niet worden geladen',false)}
 }
 async function saveCentralDay(day){
