@@ -31,7 +31,7 @@ select,input{width:100%;padding:11px;border:1px solid #d8d4cc;border-radius:11px
 .recipeParts{margin-top:7px;font-size:14px;color:var(--muted)}
 .notice{background:var(--peach);padding:12px 14px;border-radius:13px;margin:10px 0}
 .daytabs{display:flex;gap:8px;overflow:auto;padding:4px 0 14px;scrollbar-width:none}.planner{display:grid;gap:14px}.mealcard{border-radius:17px;padding:15px;border:1px solid var(--line)}.mealcard.lunch{background:#fff7dc}.mealcard.dinner{background:#f7e7dc}.mealcard.dessert{background:#f7e8ef}.mealcard.vegbox{background:#edf6e7;border-color:#d5e5ca}.mealcard h3{margin:0 0 12px}.mealgrid{display:grid;grid-template-columns:1fr;gap:10px}.peoplebar{display:flex;align-items:center;gap:10px;justify-content:space-between}.peoplebar input{max-width:110px}.daytitle{font-size:25px;font-weight:700;margin-bottom:12px}
-@media(min-width:760px){body{font-size:18px}.weekgrid{display:block}.planner{grid-template-columns:1fr 1.35fr 1fr}.mealcard.vegbox{grid-column:1/-1}.mealgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.card{margin:0}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.bottom{left:50%;transform:translateX(-50%);max-width:700px;border:1px solid var(--line);border-bottom:0;border-radius:18px 18px 0 0;overflow:hidden}header h1{font-size:30px}}
+@media(min-width:760px){.daytabs{justify-content:center}body{font-size:18px}.weekgrid{display:block}.planner{grid-template-columns:1fr 1.35fr 1fr}.mealcard.vegbox{grid-column:1/-1}.mealgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.card{margin:0}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.bottom{left:50%;transform:translateX(-50%);max-width:700px;border:1px solid var(--line);border-bottom:0;border-radius:18px 18px 0 0;overflow:hidden}header h1{font-size:30px}}
 .notearea{width:100%;min-height:72px;padding:11px;border:1px solid #d8d4cc;border-radius:11px;background:#fff;font:inherit;color:var(--ink);resize:vertical}
 .samebar{display:flex;align-items:center;gap:8px;margin:2px 0 12px;font-size:14px;color:var(--muted)}
 .vegbox{margin-top:18px;padding:16px;border-radius:18px;background:#f1f7e9;border:1px solid #d8e7c9}
@@ -204,6 +204,65 @@ select,input{width:100%;padding:11px;border:1px solid #d8d4cc;border-radius:11px
 .syncDot{width:10px;height:10px;border-radius:50%;background:#d1a45a;display:inline-block}
 .syncDot.ok{background:#6ca66f}.syncDot.err{background:#c86464}
 .onlineNote{background:#eef6e9;border:1px solid #d4e3cb;border-radius:12px;padding:9px 11px;margin-bottom:12px;font-size:13px}
+
+header{display:flex;justify-content:center}
+header .brand{width:min(980px,calc(100% - 32px));margin:0 auto;justify-content:center;text-align:center}
+header .brandText{text-align:center}
+#weekView>.sectionTitle,
+#menuView>.sectionTitle,
+#prepView>.sectionTitle,
+#orderView>.sectionTitle,
+#recipesView>.sectionTitle{
+  width:min(980px,calc(100% - 32px));
+  margin-left:auto;
+  margin-right:auto;
+}
+#weekView>.sectionTitle{align-items:center}
+#weekView>.sectionTitle>div{text-align:center;flex:1}
+#weekView>.sectionTitle>button{margin-left:12px}
+#weekView>.sharedStatus{
+  width:min(980px,calc(100% - 32px));
+  margin-left:auto;
+  margin-right:auto;
+  justify-content:center;
+}
+#weekView>#week{
+  width:min(980px,calc(100% - 32px));
+  margin-left:auto;
+  margin-right:auto;
+}
+@media(max-width:700px){
+  #weekView>.sectionTitle{display:grid;grid-template-columns:1fr;gap:10px}
+  #weekView>.sectionTitle>button{margin:0 auto}
+}
+
+/* V45: force the complete Ma–Zo strip into the exact horizontal center */
+#week .daytabs{
+  width:max-content !important;
+  max-width:100%;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  justify-content:center !important;
+}
+#week .dayLegend{
+  text-align:center;
+}
+@media(max-width:700px){
+  #week .daytabs{
+    width:100% !important;
+    justify-content:flex-start !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+  }
+}
+
+/* V46: center only the active day heading above the cards */
+#week .daytitle{
+  text-align:center !important;
+  width:100% !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
 </style>
 </head>
 <body>
@@ -849,7 +908,7 @@ function removeItem(id){
  localStorage.setItem('gh39_itemMeta',JSON.stringify(itemMeta));
  drawLibrary();drawWeek();drawOrders();
 }
-function drawNorms(){document.getElementById('norms').innerHTML=Object.entries(norms).map(([k,v])=>`<div class="librow"><div>${k[0].toUpperCase()+k.slice(1)}</div><div class="qty">${v[0]} ${v[1]}</div></div>`).join('')}
+function drawNorms(){let el=document.getElementById('norms');if(!el)return;el.innerHTML=Object.entries(norms).map(([k,v])=>`<div class="librow"><div>${k[0].toUpperCase()+k.slice(1)}</div><div class="qty">${v[0]} ${v[1]}</div></div>`).join('')}
 
 const months=['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
 function defaultMonday(){
