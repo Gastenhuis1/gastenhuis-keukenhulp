@@ -263,6 +263,48 @@ header .brandText{text-align:center}
   margin-left:auto !important;
   margin-right:auto !important;
 }
+
+/* V47: center the complete top control area */
+#weekView>.sectionTitle{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  gap:10px !important;
+}
+#weekView>.sectionTitle>div{
+  width:100% !important;
+  text-align:center !important;
+}
+#weekView>.sectionTitle>button{
+  margin:0 auto !important;
+}
+#weekView>.sharedStatus{
+  justify-content:center !important;
+  text-align:center !important;
+}
+#week .daytabs{
+  width:max-content !important;
+  max-width:100% !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  justify-content:center !important;
+}
+#week .dayLegend,
+#week .daytitle{
+  text-align:center !important;
+  width:100% !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+@media(max-width:700px){
+  #week .daytabs{
+    width:100% !important;
+    justify-content:flex-start !important;
+    overflow-x:auto !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -399,7 +441,7 @@ Object.assign(recipes,customRecipes);
 
 const SUPABASE_URL='https://cttotbzkcluauzgnybh.supabase.co';
 const SUPABASE_KEY='sb_publishable_k3vjLo3RzAfyi8mhz7ppKA_9Y1XxRTX';
-const SB_HEADERS={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'};
+const SB_HEADERS={'apikey':SUPABASE_KEY,'Content-Type':'application/json'};
 async function sb(path,options={}){
   const r=await fetch(SUPABASE_URL+'/rest/v1/'+path,{...options,headers:{...SB_HEADERS,...(options.headers||{})}});
   if(!r.ok)throw new Error(await r.text());
@@ -466,7 +508,7 @@ async function loadCentralWeek(){
   });
   localStorage.setItem('gh29_week',JSON.stringify(week));drawWeek();drawOrders();drawPrep();drawMenu();
   setSync('Verbonden · menuweek centraal geladen',true);
- }catch(e){console.error(e);setSync('Menuweek kon niet centraal worden geladen',false)}
+ }catch(e){console.error(e);setSync('Centrale menuweek kon niet worden geladen',false)}
 }
 async function saveCentralDay(day){
  const s=stateFor(day);
