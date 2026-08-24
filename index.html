@@ -471,6 +471,66 @@ main{padding-top:14px}
   .appHeader .brand img{width:110px !important;height:30px !important}
   .appHeader .brandText h1{font-size:18px !important}
 }
+
+/* V51: rustige bovenkant */
+.appHeader{
+  min-height:0 !important;
+  padding:8px 16px 5px !important;
+  display:flex !important;
+  justify-content:center !important;
+  align-items:center !important;
+}
+.appHeader .brand{
+  width:100% !important;
+  display:flex !important;
+  justify-content:center !important;
+  align-items:center !important;
+  gap:0 !important;
+}
+.appHeader .brand img{
+  display:block !important;
+  width:105px !important;
+  height:auto !important;
+  max-height:42px !important;
+  object-fit:contain !important;
+}
+.appHeader .brandText{
+  display:none !important;
+}
+
+/* Menu maken direct en rustig onder het logo */
+#weekView > .sectionTitle{
+  margin:8px auto 0 !important;
+  position:relative !important;
+  justify-content:center !important;
+  min-height:44px !important;
+}
+#weekView > .sectionTitle > div{
+  text-align:center !important;
+}
+#weekView > .sectionTitle h2{
+  margin:0 !important;
+}
+#weekView > .sectionTitle .secondary{
+  position:absolute !important;
+  right:0 !important;
+  top:0 !important;
+}
+
+/* verberg de oude introductieregels boven de dagknoppen */
+#weekView > .sectionTitle + p,
+#weekView > .sectionTitle + .muted,
+#weekView > .sectionTitle ~ .weekIntro{
+  display:none !important;
+}
+
+@media(max-width:700px){
+  .appHeader .brand img{width:92px !important}
+  #weekView > .sectionTitle .secondary{
+    position:static !important;
+    margin-left:12px !important;
+  }
+}
 </style>
 </head>
 <body>
