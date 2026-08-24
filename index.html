@@ -532,97 +532,110 @@ main{padding-top:14px}
   }
 }
 
-/* V52 FULL: compacte bovenkant op echte HTML-structuur */
+/* V53 — definitieve rustige bovenkant */
 .appHeader{
-  position:sticky!important;
-  top:0!important;
-  z-index:4!important;
-  min-height:0!important;
-  height:auto!important;
-  padding:5px 16px 3px!important;
-  margin:0!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  background:#fffaf3!important;
-  border-bottom:1px solid var(--line)!important;
+  position:sticky !important;
+  top:0 !important;
+  z-index:4 !important;
+  display:flex !important;
+  justify-content:center !important;
+  align-items:center !important;
+  min-height:0 !important;
+  height:auto !important;
+  padding:6px 14px 4px !important;
+  margin:0 !important;
+  background:linear-gradient(135deg,var(--sage),#f8e8d6) !important;
+  border-bottom:1px solid #ffffffaa !important;
 }
 .appHeader .appLogo{
-  display:block!important;
-  width:92px!important;
-  height:30px!important;
-  max-width:92px!important;
-  max-height:30px!important;
-  object-fit:contain!important;
-  margin:0!important;
+  display:block !important;
+  width:118px !important;
+  height:38px !important;
+  max-width:118px !important;
+  max-height:38px !important;
+  object-fit:contain !important;
+  margin:0 auto !important;
 }
-main{padding-top:6px!important}
-#weekView>.sectionTitle{
-  width:min(980px,calc(100% - 32px))!important;
-  margin:2px auto 0!important;
-  min-height:40px!important;
-  display:flex!important;
-  flex-direction:row!important;
-  align-items:center!important;
-  justify-content:center!important;
-  position:relative!important;
-  text-align:center!important;
+main{
+  padding-top:8px !important;
 }
-#weekView>.sectionTitle>div{
-  width:auto!important;
-  flex:0 1 auto!important;
-  text-align:center!important;
+#weekView > .sectionTitle{
+  width:min(900px,calc(100% - 32px)) !important;
+  margin:0 auto 2px !important;
+  min-height:42px !important;
+  display:flex !important;
+  flex-direction:row !important;
+  justify-content:center !important;
+  align-items:center !important;
+  position:relative !important;
+  text-align:center !important;
 }
-#weekView>.sectionTitle h2{
-  margin:0!important;
-  font-size:23px!important;
+#weekView > .sectionTitle > div{
+  width:auto !important;
+  flex:0 1 auto !important;
+  text-align:center !important;
 }
-#weekView>.sectionTitle>.secondary{
-  position:absolute!important;
-  right:0!important;
-  top:50%!important;
-  transform:translateY(-50%)!important;
-  margin:0!important;
+#weekView > .sectionTitle h2{
+  margin:0 !important;
+  font-size:23px !important;
 }
-#weekView>.sharedStatus{display:none!important}
+#weekView > .sectionTitle > .secondary{
+  position:absolute !important;
+  right:0 !important;
+  top:50% !important;
+  transform:translateY(-50%) !important;
+  margin:0 !important;
+  padding:9px 13px !important;
+}
+#weekView > #week{
+  width:min(900px,calc(100% - 32px)) !important;
+  margin:0 auto !important;
+}
 #week .daytabs{
-  width:max-content!important;
-  max-width:100%!important;
-  margin:3px auto 5px!important;
-  justify-content:center!important;
+  width:max-content !important;
+  max-width:100% !important;
+  margin:4px auto 6px !important;
+  justify-content:center !important;
 }
-#week .dayLegend{display:none!important}
+#week .dayLegend{
+  display:none !important;
+}
 #week .daytitle{
-  width:100%!important;
-  text-align:center!important;
-  margin:0 auto 8px!important;
+  width:100% !important;
+  text-align:center !important;
+  margin:0 auto 10px !important;
 }
 @media(max-width:700px){
-  .appHeader .appLogo{width:82px!important;height:27px!important}
-  #weekView>.sectionTitle{
-    min-height:74px!important;
-    padding-bottom:34px!important;
+  .appHeader .appLogo{
+    width:105px !important;
+    height:34px !important;
   }
-  #weekView>.sectionTitle>.secondary{
-    top:auto!important;
-    bottom:0!important;
-    right:50%!important;
-    transform:translateX(50%)!important;
+  #weekView > .sectionTitle{
+    min-height:76px !important;
+    padding-bottom:34px !important;
+  }
+  #weekView > .sectionTitle > .secondary{
+    top:auto !important;
+    bottom:0 !important;
+    right:50% !important;
+    transform:translateX(50%) !important;
   }
   #week .daytabs{
-    width:100%!important;
-    justify-content:flex-start!important;
-    overflow-x:auto!important;
+    width:100% !important;
+    justify-content:flex-start !important;
+    overflow-x:auto !important;
   }
 }
 
 </style>
 </head>
 <body>
-<header class="appHeader"><img class="appLogo" src="gastenhuis-logo.png" alt="Het Gastenhuis"></header>
+<header class="appHeader">
+  <img class="appLogo" src="gastenhuis-logo.png" alt="Het Gastenhuis">
+</header>
 <main>
 <section id="weekView" class="view active">
- <div class="sectionTitle"><div><h2>🍽️ Menu maken</h2></div><button class="secondary" onclick="resetWeek()">Nieuwe week</button></div><div class="sharedStatus"><span id="syncDot" class="syncDot"></span><span id="syncText">Verbinding met centrale database controleren…</span></div><div id="week" class="weekgrid"></div>
+ <div class="sectionTitle"><div><h2>🍽️ Menu maken</h2></div><button class="secondary" onclick="resetWeek()">Nieuwe week</button></div><div id="week" class="weekgrid"></div>
 </section>
 
 
@@ -1304,6 +1317,8 @@ function mailCurrent(subject){
 function actionBar(title){return `<div class="actionBar"><button onclick="printCurrent()">🖨️ Print / PDF</button><button class="secondary" onclick="mailCurrent('${title.replace(/'/g,"\\'")}')">✉️ Mailen</button></div>`}
 function showView(btn){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.getElementById(btn.dataset.view).classList.add('active');document.querySelectorAll('.bottom button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');if(btn.dataset.view==='menuView'){initMenuSettings();drawMenu()}if(btn.dataset.view==='orderView')drawOrders();if(btn.dataset.view==='prepView')drawPrep();if(btn.dataset.view==='recipesView'){drawLibrary();drawNorms()}}
 drawWeek();drawOrders();drawPrep();drawLibrary();drawNorms();drawBasisStock();initMenuSettings();drawMenu();
-if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker' in navigator){
+navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{});
+}
 window.addEventListener('load',async()=>{try{openManage();}catch(e){} await loadCentralItems(); await loadCentralWeek();});
 </script></body></html>
