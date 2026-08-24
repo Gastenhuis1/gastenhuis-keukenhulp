@@ -353,14 +353,136 @@ header .brandText{text-align:center}
   margin-left:auto !important;
   margin-right:auto !important;
 }
+
+/* V49: compact header + cleaner menu top */
+.appHeader{
+  position:sticky;
+  top:0;
+  z-index:4;
+  padding:9px 18px;
+  background:#fffaf3;
+  border-bottom:1px solid var(--line);
+}
+.appHeader .brand{
+  width:min(980px,calc(100% - 20px));
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:16px;
+  text-align:left;
+}
+.appHeader .brand img{
+  width:165px;
+  height:40px;
+  object-fit:contain;
+  object-position:left center;
+  flex:0 0 auto;
+}
+.appHeader .brandText{
+  text-align:left;
+}
+.appHeader .brandText h1{
+  margin:0;
+  font-size:22px;
+  line-height:1;
+  font-weight:800;
+}
+.appHeader .brandText p{
+  margin:4px 0 0;
+  font-size:12px;
+  color:var(--muted);
+}
+
+#weekView > .sectionTitle{
+  width:min(980px,calc(100% - 32px)) !important;
+  margin:0 auto 8px !important;
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  text-align:left !important;
+  gap:14px !important;
+}
+#weekView > .sectionTitle > div{
+  width:auto !important;
+  text-align:left !important;
+  flex:1 1 auto;
+}
+#weekView > .sectionTitle > button{
+  margin:0 !important;
+  flex:0 0 auto;
+}
+
+/* status blijft functioneel in de code maar is niet zichtbaar in de interface */
+#weekView > .sharedStatus{
+  display:none !important;
+}
+
+#week .daytabs{
+  width:max-content !important;
+  max-width:100% !important;
+  margin:8px auto 10px !important;
+  justify-content:center !important;
+}
+#week .dayLegend{display:none !important}
+#week .daytitle{
+  text-align:center !important;
+  width:100% !important;
+  margin:0 auto 12px !important;
+}
+main{padding-top:14px}
+
+@media(max-width:700px){
+  .appHeader .brand{
+    width:100%;
+    justify-content:center;
+  }
+  .appHeader .brand img{width:145px;height:36px}
+  .appHeader .brandText h1{font-size:20px}
+  .appHeader .brandText p{font-size:11px}
+  #weekView > .sectionTitle{
+    flex-direction:column !important;
+    align-items:center !important;
+    text-align:center !important;
+  }
+  #weekView > .sectionTitle > div{text-align:center !important}
+}
+
+/* V50: smaller branding, Menu maken directly underneath */
+.appHeader{
+  padding:7px 18px !important;
+}
+.appHeader .brand{
+  justify-content:center !important;
+  gap:10px !important;
+}
+.appHeader .brand img{
+  width:125px !important;
+  height:32px !important;
+}
+.appHeader .brandText h1{
+  font-size:20px !important;
+}
+#weekView > .sectionTitle{
+  margin-top:6px !important;
+}
+@media(max-width:700px){
+  .appHeader .brand img{width:110px !important;height:30px !important}
+  .appHeader .brandText h1{font-size:18px !important}
+}
 </style>
 </head>
 <body>
-<header><div class="brand"><img src="gastenhuis-logo.png" alt="Het Gastenhuis"><div class="brandText"><h1>Keukenhulp</h1><p>Menu maken • voorbereiden • bestellen • beheren</p></div></div></header>
+<header class="appHeader">
+  <div class="brand">
+    <img src="gastenhuis-logo.png" alt="Het Gastenhuis">
+    <div class="brandText"><h1>Keukenhulp</h1></div>
+  </div>
+</header>
 <main>
 <section id="weekView" class="view active">
- <div class="sectionTitle"><div><h2>🍽️ Menu maken</h2><div class="small">Kies een dag en stel lunch, diner en dessert samen.</div></div><button class="secondary" onclick="resetWeek()">Nieuwe week</button></div>
- <div class="small" style="margin:-4px 0 6px">Tik op Ma–Zo om van dag te wisselen. ✓ betekent alleen dat die dag compleet is.</div><div class="sharedStatus"><span id="syncDot" class="syncDot"></span><span id="syncText">Verbinding met centrale database controleren…</span></div><div id="week" class="weekgrid"></div>
+ <div class="sectionTitle"><div><h2>🍽️ Menu maken</h2></div><button class="secondary" onclick="resetWeek()">Nieuwe week</button></div><div class="sharedStatus"><span id="syncDot" class="syncDot"></span><span id="syncText">Verbinding met centrale database controleren…</span></div><div id="week" class="weekgrid"></div>
 </section>
 
 
