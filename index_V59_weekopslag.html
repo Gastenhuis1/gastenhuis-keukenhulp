@@ -1,0 +1,1572 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#6f8f72">
+<link rel="manifest" href="manifest.json">
+<title>Gastenhuis Keukenhulp</title>
+<!-- V59: menu per huis én per week opgeslagen; weekwisselaar toegevoegd -->
+<style>
+:root{--bg:#fffaf3;--card:#fff;--ink:#34433b;--muted:#718078;--green:#6f8f72;--sage:#dfe9dc;--peach:#f6d7bd;--yellow:#f6e8a8;--blue:#dcebf1;--pink:#f2dce3;--line:#e9e2d8;--shadow:0 8px 24px rgba(60,70,60,.08)}
+*{box-sizing:border-box} body{margin:0;font-family:Calibri,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:17px}
+header{padding:20px 20px 14px;background:linear-gradient(135deg,var(--sage),#f8e8d6);position:sticky;top:0;z-index:4;border-bottom:1px solid #ffffffaa}
+header h1{margin:0;font-size:26px}.brand{display:flex;align-items:center;gap:14px}.brand img{width:min(310px,58vw);height:58px;object-fit:contain;object-position:left center}.brandText{min-width:0} header p{margin:5px 0 0;color:var(--muted);font-size:15px}
+main{max-width:1100px;margin:auto;padding:18px 16px 95px}
+.view{display:none}.view.active{display:block}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:14px}
+button,.btn,select,input{font:inherit} button{border:0;border-radius:13px;padding:11px 15px;background:var(--green);color:white;font-weight:700;cursor:pointer}
+button.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)} button.soft{background:var(--sage);color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:var(--shadow)}
+.dayhead{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer}.dayhead h3{margin:0;font-size:21px}.summary{color:var(--muted);font-size:14px;margin-top:4px}
+.daybody{display:none;padding-top:14px}.day.open .daybody{display:block}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.full{grid-column:1/-1}
+label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin:0 0 5px}
+select,input{width:100%;padding:11px;border:1px solid #d8d4cc;border-radius:11px;background:white;color:var(--ink)}
+.pill{display:inline-block;padding:5px 9px;border-radius:999px;background:var(--yellow);font-size:13px;font-weight:700}
+.sectionTitle{display:flex;justify-content:space-between;align-items:center;gap:10px}.sectionTitle h2{margin:0 0 3px;font-size:23px}
+.empty{padding:22px;text-align:center;color:var(--muted)}
+.bottom{position:fixed;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border-top:1px solid var(--line);z-index:10;padding-bottom:env(safe-area-inset-bottom)}
+.bottom button{background:white;color:var(--muted);border-radius:0;padding:10px 4px;font-size:12px}.bottom button.active{color:var(--green);background:#f7fbf5}.ico{display:block;font-size:22px;margin-bottom:2px}
+.chips{display:flex;gap:8px;overflow:auto;padding:3px 0 9px}.chip{white-space:nowrap;background:white;color:var(--ink);border:1px solid var(--line);padding:8px 11px}.chip.active{background:var(--green);color:white}
+.librow,.orderrow{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}.librow:last-child,.orderrow:last-child{border-bottom:0}
+.qty{font-weight:700}.small{font-size:13px;color:var(--muted)}.tag{font-size:12px;padding:4px 7px;border-radius:8px;background:var(--blue);margin-right:5px}
+.recipeParts{margin-top:7px;font-size:14px;color:var(--muted)}
+.notice{background:var(--peach);padding:12px 14px;border-radius:13px;margin:10px 0}
+.daytabs{display:flex;gap:8px;overflow:auto;padding:4px 0 14px;scrollbar-width:none}.planner{display:grid;gap:14px}.mealcard{border-radius:17px;padding:15px;border:1px solid var(--line)}.mealcard.lunch{background:#fff7dc}.mealcard.dinner{background:#f7e7dc}.mealcard.dessert{background:#f7e8ef}.mealcard.vegbox{background:#edf6e7;border-color:#d5e5ca}.mealcard h3{margin:0 0 12px}.mealgrid{display:grid;grid-template-columns:1fr;gap:10px}.peoplebar{display:flex;align-items:center;gap:10px;justify-content:space-between}.peoplebar input{max-width:110px}.daytitle{font-size:25px;font-weight:700;margin-bottom:12px}
+@media(min-width:760px){.daytabs{justify-content:center}body{font-size:18px}.weekgrid{display:block}.planner{grid-template-columns:1fr 1.35fr 1fr}.mealcard.vegbox{grid-column:1/-1}.mealgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.card{margin:0}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.bottom{left:50%;transform:translateX(-50%);max-width:700px;border:1px solid var(--line);border-bottom:0;border-radius:18px 18px 0 0;overflow:hidden}header h1{font-size:30px}}
+.notearea{width:100%;min-height:72px;padding:11px;border:1px solid #d8d4cc;border-radius:11px;background:#fff;font:inherit;color:var(--ink);resize:vertical}
+.samebar{display:flex;align-items:center;gap:8px;margin:2px 0 12px;font-size:14px;color:var(--muted)}
+.vegbox{margin-top:18px;padding:16px;border-radius:18px;background:#f1f7e9;border:1px solid #d8e7c9}
+.countline{display:grid;grid-template-columns:1fr 120px;gap:10px;align-items:end}
+
+.menuSheet{width:min(100%,760px);aspect-ratio:210/297;margin:14px auto;background:#fffdf8;position:relative;overflow:hidden;border-radius:4px;box-shadow:0 10px 35px rgba(50,50,40,.14);padding:48px 82px;color:#252525}
+.menuSheet:before,.menuSheet:after{content:"";position:absolute;inset:0;pointer-events:none}
+.menuSheet.summer:before{background:
+ radial-gradient(circle at 4% 8%,#f4c9d7 0 24px,transparent 25px),
+ radial-gradient(circle at 96% 15%,#f4d58d 0 30px,transparent 31px),
+ radial-gradient(circle at 4% 43%,#c8d9a5 0 32px,transparent 33px),
+ radial-gradient(circle at 95% 60%,#efb8c8 0 27px,transparent 28px),
+ radial-gradient(circle at 8% 91%,#f0d483 0 36px,transparent 37px),
+ radial-gradient(circle at 94% 91%,#bdd5a7 0 34px,transparent 35px)}
+.menuSheet.autumn:before{background:
+ radial-gradient(ellipse at 4% 10%,#c98c52 0 32px,transparent 33px),
+ radial-gradient(ellipse at 96% 18%,#d4a24c 0 34px,transparent 35px),
+ radial-gradient(ellipse at 3% 62%,#8eaa6b 0 34px,transparent 35px),
+ radial-gradient(ellipse at 96% 72%,#b96f45 0 38px,transparent 39px),
+ radial-gradient(ellipse at 10% 94%,#d2a04d 0 38px,transparent 39px)}
+.menuSheet.winter:before{background:
+ radial-gradient(circle at 5% 10%,#dceaf0 0 28px,transparent 29px),
+ radial-gradient(circle at 95% 17%,#c8d9df 0 35px,transparent 36px),
+ radial-gradient(circle at 4% 68%,#e4ecee 0 36px,transparent 37px),
+ radial-gradient(circle at 94% 87%,#cddfe5 0 38px,transparent 39px)}
+.menuSheet:after{inset:18px;border:1px solid rgba(100,120,90,.18)}
+.menuTitle{text-align:center;font-weight:700;font-size:24px;margin:0 0 22px;text-transform:uppercase}
+.menuDays{text-align:center;position:relative;z-index:1}
+.menuDay{margin:0 0 13px}.menuDay h3{font-family:Calibri,Arial,sans-serif;font-size:18px;margin:0;font-weight:700}.stars{font-size:11px;letter-spacing:1px;margin:-2px 0 5px}
+.menuFood{font-family:"Comic Sans MS","Segoe Print",Calibri,sans-serif;font-size:19px;line-height:1.22}.menuFood div{margin:1px 0}
+.menuVeg{font-size:13px;margin-top:3px;color:#52664f;font-family:Calibri,Arial,sans-serif}
+@media(max-width:600px){.menuSheet{padding:34px 45px}.menuTitle{font-size:19px}.menuFood{font-size:15px}.menuDay{margin-bottom:9px}}
+@media print{
+ body *{visibility:hidden!important} #menuPrint,#menuPrint *{visibility:visible!important}
+ #menuPrint{position:absolute;left:0;top:0;width:100%;margin:0}
+ .menuSheet{width:210mm;height:297mm;aspect-ratio:auto;margin:0;box-shadow:none;border-radius:0;padding:14mm 24mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ @page{size:A4 portrait;margin:0}
+}
+
+.quickTop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 16px}
+.quickCount{display:flex;align-items:center;gap:8px;background:white;border:1px solid var(--line);border-radius:15px;padding:8px 11px}
+.quickCount input{width:72px;padding:7px;text-align:center}
+.quickMeal{background:white;border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow);margin-bottom:14px}
+.quickMeal h3{margin:0 0 12px;font-size:22px}
+.tilegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pickTile{min-height:82px;border:1px solid var(--line);border-radius:16px;padding:12px;background:#fff;color:var(--ink);text-align:left;font-weight:400}
+.pickTile .tileIcon{font-size:25px;display:block;margin-bottom:5px}.pickTile b{display:block;font-size:14px;color:var(--muted);margin-bottom:3px}.pickTile span{display:block;font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pickTile.filled{background:#f7fbf5;border-color:#cadcc7}.lunchQuick{background:#fff8df}.dinnerQuick{background:#f4f8ef}.dessertQuick{background:#fff0f3}.vegQuick{background:#eef7e7}
+.vegSummary{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.samePill{padding:7px 9px;border-radius:999px;background:#fff;color:#5e725c;border:1px solid #d6e3cf;font-size:13px}
+.modal{display:none;position:fixed;inset:0;background:rgba(40,48,43,.35);z-index:40;padding:18px;align-items:flex-end;justify-content:center}.modal.open{display:flex}
+.sheet{background:var(--bg);width:min(100%,720px);max-height:82vh;border-radius:24px 24px 12px 12px;padding:16px;overflow:auto;box-shadow:0 18px 50px rgba(0,0,0,.18)}
+.sheetHead{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:-16px;background:var(--bg);padding:10px 0 12px;z-index:2}.sheetHead h3{margin:0}
+.choiceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.choice{background:white;color:var(--ink);border:1px solid var(--line);min-height:58px;padding:10px;border-radius:14px;font-weight:700}.choice.selected{background:var(--sage);border-color:#b9cfb6}.choice.none{color:var(--muted);font-weight:400}
+.doneDot{font-size:13px;padding:5px 8px;border-radius:999px;background:#fff;border:1px solid var(--line)}.doneDot.ok{background:#dfeeda;color:#496548}
+@media(min-width:760px){.quickLayout{display:grid;grid-template-columns:1fr 1.35fr;gap:14px;align-items:start}.tilegrid{grid-template-columns:repeat(3,minmax(0,1fr))}.choiceGrid{grid-template-columns:repeat(3,minmax(0,1fr))}.modal{align-items:center}.sheet{border-radius:24px}.quickMeal{margin-bottom:0}}
+
+.flow{max-width:900px;margin:auto}.flowSection{background:white;border:1px solid var(--line);border-radius:20px;margin:0 0 14px;overflow:hidden;box-shadow:var(--shadow)}
+.flowHead{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;font-size:21px;font-weight:700}
+.flowLunch .flowHead{background:#fff4c9}.flowDinner .flowHead{background:#e8f1e2}.flowDessert .flowHead{background:#f9e5eb}
+.flowBody{padding:12px 14px}.flowRow{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;padding:11px 4px;border-bottom:1px solid var(--line);cursor:pointer}.flowRow:last-child{border-bottom:0}
+.flowIcon{font-size:24px;text-align:center}.flowLabel{font-size:13px;color:var(--muted);font-weight:700}.flowValue{font-size:18px;font-weight:700;margin-top:2px}.arrow{font-size:22px;color:#9aa59f}
+.vegStrip{margin:10px 12px 13px;background:#f0f7ea;border:1px solid #d5e5cd;border-radius:15px;padding:11px 12px}
+.vegStripTop{display:flex;justify-content:space-between;align-items:center;gap:10px}.vegStrip b{font-size:16px}.vegStrip .quickCount{background:#fff;padding:5px 8px}.vegStrip .quickCount input{width:60px}
+.vegChoice{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;background:white;border:1px solid #dce8d7;border-radius:12px;padding:10px;color:var(--ink);width:100%;text-align:left}
+.vegSame{font-size:12px;color:#62735f;margin-top:7px}.dessertTotal{font-size:14px;font-weight:700;padding:6px 9px;border-radius:999px;background:#fff}
+@media(min-width:760px){.flowRow{grid-template-columns:50px 1fr 30px}.flowBody{padding:10px 18px}.flowHead{padding:15px 20px}}
+
+.pairGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;margin-bottom:14px}
+.pairGrid .flowSection{margin:0;height:100%}.inlineChoices{display:none;padding:8px 10px 12px;background:#fafbf8;border-top:1px solid var(--line)}
+.inlineChoices.open{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.inlineChoice{background:white;color:var(--ink);border:1px solid var(--line);border-radius:11px;padding:9px 8px;min-height:44px;text-align:left;font-weight:700}
+.inlineChoice.selected{background:var(--sage);border-color:#b9cfb6}.inlineChoice.none{font-weight:400;color:var(--muted)}
+.miniRow{display:grid;grid-template-columns:36px 1fr 22px;gap:8px;align-items:center;padding:9px 3px;border-bottom:1px solid var(--line);cursor:pointer}.miniRow:last-of-type{border-bottom:0}
+.miniRow .flowIcon{font-size:20px}.miniRow .flowValue{font-size:16px}.miniRow .flowLabel{font-size:12px}
+.vegaHead{background:#e7f2df!important}
+.sameHint{font-size:12px;color:#687968;padding:8px 12px 11px}
+@media(max-width:699px){.pairGrid{grid-template-columns:1fr}.inlineChoices.open{grid-template-columns:1fr 1fr}}
+@media(min-width:900px){.inlineChoices.open{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+.standardCard{background:#fff9f1!important;border:2px solid #efcfae!important}
+.standardCard>.flowHead{background:#f6d7bd!important;color:#604934}
+.veggieCard{background:#f4faef!important;border:2px solid #b8d6a8!important}
+.veggieCard>.flowHead,.veggieCard>.vegaHead{background:#cfe5c2!important;color:#365334}
+.standardCard .inlineChoices{background:#fff6eb}.veggieCard .inlineChoices{background:#eef7e8}
+.standardCard .inlineChoice.selected{background:#f6d7bd;border-color:#dfb98f}
+.veggieCard .inlineChoice.selected{background:#cfe5c2;border-color:#9fc28c}
+.menuKind{font-size:11px;letter-spacing:.6px;text-transform:uppercase;opacity:.72;display:block;margin-bottom:2px}
+
+/* V16 compact uitklaplijsten */
+.inlineChoices.open{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:7px 8px 10px}
+.inlineChoice{font-size:13px;line-height:1.15;min-height:38px;padding:7px 8px;font-weight:600;overflow-wrap:anywhere}
+@media(min-width:760px){.inlineChoices.open{grid-template-columns:repeat(2,minmax(0,1fr))}.inlineChoice{font-size:13px}}
+@media(min-width:1050px){.inlineChoices.open{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+.orderDayGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:12px 0}
+.orderDay{background:white;color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:11px 6px;font-weight:700}
+.orderDay.active{background:#dfeeda;border-color:#8eaf83;color:#355033}
+.orderTools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.orderTitle{font-size:17px;font-weight:700;margin:12px 0 7px}
+@media(max-width:650px){.orderDayGrid{grid-template-columns:repeat(4,1fr)}}
+
+.ahGroup{margin:0 0 12px;background:white;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.ahHead{padding:10px 13px;font-weight:800;font-size:15px;background:#f3f6ef;border-bottom:1px solid var(--line)}
+.ahGroup .orderrow{padding:10px 13px}
+.ahGroup .orderrow:last-child{border-bottom:0}
+
+.stockGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+.stockItem{display:flex;align-items:center;gap:9px;background:white;border:1px solid var(--line);border-radius:12px;padding:9px 10px;cursor:pointer}
+.stockItem.on{background:#eaf4e4;border-color:#a9c89a}.stockItem input{width:18px;height:18px}.stockItem span{font-weight:650;font-size:14px}
+.stockGroup{margin:12px 0}.stockGroup h4{margin:0 0 7px;font-size:15px}
+.stockBar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+@media(min-width:800px){.stockGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+.supplierTabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
+.supplierTab{background:#fff;border:2px solid var(--line);color:var(--ink);border-radius:14px;padding:12px;font-weight:800}
+.supplierTab.active{background:#dfeeda;border-color:#8eaf83}
+.stockGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+.stockRow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 10px}
+.stockMeta{font-size:12px;color:var(--muted);margin-top:3px}
+.supplierBadge{display:inline-block;font-size:11px;padding:3px 7px;border-radius:999px;background:#eef2ea;margin-left:5px}
+.stepper{display:flex;align-items:center;gap:5px}.stepper button{width:30px;height:30px;padding:0;border-radius:9px}.stepper b{min-width:24px;text-align:center}
+.stockGroup{margin:13px 0}.stockGroup h4{margin:0 0 7px}.stockBar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+@media(max-width:650px){.stockGrid{grid-template-columns:1fr}}
+@media(min-width:900px){.stockGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+.actionBar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
+@media print{
+ .bottom,.actionBar,.orderFilters,.daytabs,button{display:none!important}
+ body{background:white!important}
+ .view.active{display:block!important}
+}
+
+.orderrow.stockable{grid-template-columns:1fr auto;gap:10px;align-items:center}
+.orderCalc{font-size:11px;color:var(--muted);margin-top:3px}
+.stockInput{display:flex;align-items:center;gap:5px;justify-content:flex-end;flex-wrap:wrap}
+.stockInput input{width:72px;padding:6px 7px;border-radius:9px;border:1px solid var(--line);font-size:13px}
+.stockInput .qty{min-width:88px}
+
+.daytabs{display:flex;gap:8px;overflow:auto;padding:4px 0 14px;scrollbar-width:none}
+
+
+.dayRadio:checked + 
+
+.dayRadio:checked + .dayLabel 
+
+.daytabs{display:flex;gap:8px;overflow:auto;padding:4px 0 14px;scrollbar-width:none}
+.dayPick{display:flex;align-items:center;background:#fff;border:1px solid var(--line);border-radius:13px;overflow:hidden;min-width:72px}
+.dayPick.active{outline:3px solid rgba(111,143,114,.22);border-color:var(--green)}
+.dayToggle{width:34px;height:40px;border:0;border-right:1px solid var(--line);background:#fff;color:#9ca79f;padding:0;border-radius:0;font-weight:800}
+.dayToggle.on{background:#dfeeda;color:#456346}
+.dayOpen{flex:1;height:40px;border:0;background:#fff;color:var(--ink);padding:0 10px;border-radius:0;font-weight:800}
+.dayPick.active .dayOpen{background:var(--green);color:white}
+.dayLegend{font-size:12px;color:var(--muted);margin:-5px 0 8px}
+
+.fruitChosen{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}
+.fruitChip{display:inline-flex;align-items:center;gap:5px;background:#fff4c9;border:1px solid #e4cf91;border-radius:999px;padding:6px 9px;font-size:13px;font-weight:700}
+.fruitChoiceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding-top:8px}
+.fruitChoiceBtn{background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:11px;padding:9px 8px;font-size:13px;font-weight:700}
+.fruitChoiceBtn.on{background:#f6e6b9;border-color:#d7bc72}
+@media(min-width:800px){.fruitChoiceGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+.managePanel{display:none;background:#fffaf3;border:2px solid #d8c8b4;border-radius:18px;padding:14px;margin:12px 0}
+.managePanel.open{display:block}.manageGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.manageGrid .full{grid-column:1/-1}.ingRows{display:grid;gap:8px;margin-top:8px}
+.ingRow{display:grid;grid-template-columns:1.5fr .65fr .65fr .9fr auto;gap:6px;align-items:end}
+.ingRow button{padding:8px 10px}.helpBox{background:#f3f7ee;border:1px solid #d8e4ce;border-radius:12px;padding:10px;font-size:13px;color:var(--muted)}
+.metaLine{font-size:12px;color:var(--muted);margin-top:3px}
+@media(max-width:700px){.manageGrid{grid-template-columns:1fr}.ingRow{grid-template-columns:1fr 1fr}.ingRow .wide{grid-column:1/-1}}
+
+.sharedStatus{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0 14px;font-size:12px;color:var(--muted)}
+.syncDot{width:10px;height:10px;border-radius:50%;background:#d1a45a;display:inline-block}
+.syncDot.ok{background:#6ca66f}.syncDot.err{background:#c86464}
+.onlineNote{background:#eef6e9;border:1px solid #d4e3cb;border-radius:12px;padding:9px 11px;margin-bottom:12px;font-size:13px}
+
+header{display:flex;justify-content:center}
+header .brand{width:min(980px,calc(100% - 32px));margin:0 auto;justify-content:center;text-align:center}
+header .brandText{text-align:center}
+#weekView>.sectionTitle,
+#menuView>.sectionTitle,
+#prepView>.sectionTitle,
+#orderView>.sectionTitle,
+#recipesView>.sectionTitle{
+  width:min(980px,calc(100% - 32px));
+  margin-left:auto;
+  margin-right:auto;
+}
+#weekView>.sectionTitle{align-items:center}
+#weekView>.sectionTitle>div{text-align:center;flex:1}
+#weekView>.sectionTitle>button{margin-left:12px}
+#weekView>.sharedStatus{
+  width:min(980px,calc(100% - 32px));
+  margin-left:auto;
+  margin-right:auto;
+  justify-content:center;
+}
+#weekView>#week{
+  width:min(980px,calc(100% - 32px));
+  margin-left:auto;
+  margin-right:auto;
+}
+@media(max-width:700px){
+  #weekView>.sectionTitle{display:grid;grid-template-columns:1fr;gap:10px}
+  #weekView>.sectionTitle>button{margin:0 auto}
+}
+
+/* V45: force the complete Ma–Zo strip into the exact horizontal center */
+#week .daytabs{
+  width:max-content !important;
+  max-width:100%;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  justify-content:center !important;
+}
+#week .dayLegend{
+  text-align:center;
+}
+@media(max-width:700px){
+  #week .daytabs{
+    width:100% !important;
+    justify-content:flex-start !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+  }
+}
+
+/* V46: center only the active day heading above the cards */
+#week .daytitle{
+  text-align:center !important;
+  width:100% !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+
+/* V47: center the complete top control area */
+#weekView>.sectionTitle{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  gap:10px !important;
+}
+#weekView>.sectionTitle>div{
+  width:100% !important;
+  text-align:center !important;
+}
+#weekView>.sectionTitle>button{
+  margin:0 auto !important;
+}
+#weekView>.sharedStatus{
+  justify-content:center !important;
+  text-align:center !important;
+}
+#week .daytabs{
+  width:max-content !important;
+  max-width:100% !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  justify-content:center !important;
+}
+#week .dayLegend,
+#week .daytitle{
+  text-align:center !important;
+  width:100% !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+@media(max-width:700px){
+  #week .daytabs{
+    width:100% !important;
+    justify-content:flex-start !important;
+    overflow-x:auto !important;
+  }
+}
+
+/* V48: one centered top stack */
+#weekView > .sectionTitle{
+  width:min(980px,calc(100% - 32px)) !important;
+  margin:0 auto !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  gap:8px !important;
+}
+#weekView > .sectionTitle > div{
+  width:100% !important;
+  text-align:center !important;
+}
+#weekView > .sectionTitle > button{
+  margin:0 auto !important;
+}
+#weekView > .sectionTitle + .small{
+  width:min(980px,calc(100% - 32px)) !important;
+  margin:0 auto 6px !important;
+  text-align:center !important;
+}
+#weekView > .sharedStatus{
+  width:min(980px,calc(100% - 32px)) !important;
+  margin:8px auto 14px !important;
+  justify-content:center !important;
+  text-align:center !important;
+}
+#weekView > #week{
+  width:min(980px,calc(100% - 32px)) !important;
+  margin:0 auto !important;
+}
+#week .daytabs{
+  width:max-content !important;
+  max-width:100% !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  justify-content:center !important;
+}
+#week .dayLegend,
+#week .daytitle{
+  width:100% !important;
+  text-align:center !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+
+/* V49: compact header + cleaner menu top */
+.appHeader{
+  position:sticky;
+  top:0;
+  z-index:4;
+  padding:9px 18px;
+  background:#fffaf3;
+  border-bottom:1px solid var(--line);
+}
+.appHeader .brand{
+  width:min(980px,calc(100% - 20px));
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:16px;
+  text-align:left;
+}
+.appHeader .brand img{
+  width:165px;
+  height:40px;
+  object-fit:contain;
+  object-position:left center;
+  flex:0 0 auto;
+}
+.appHeader .brandText{
+  text-align:left;
+}
+.appHeader .brandText h1{
+  margin:0;
+  font-size:22px;
+  line-height:1;
+  font-weight:800;
+}
+.appHeader .brandText p{
+  margin:4px 0 0;
+  font-size:12px;
+  color:var(--muted);
+}
+
+#weekView > .sectionTitle{
+  width:min(980px,calc(100% - 32px)) !important;
+  margin:0 auto 8px !important;
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  text-align:left !important;
+  gap:14px !important;
+}
+#weekView > .sectionTitle > div{
+  width:auto !important;
+  text-align:left !important;
+  flex:1 1 auto;
+}
+#weekView > .sectionTitle > button{
+  margin:0 !important;
+  flex:0 0 auto;
+}
+
+/* status blijft functioneel in de code maar is niet zichtbaar in de interface */
+#weekView > .sharedStatus{
+  display:none !important;
+}
+
+#week .daytabs{
+  width:max-content !important;
+  max-width:100% !important;
+  margin:8px auto 10px !important;
+  justify-content:center !important;
+}
+#week .dayLegend{display:none !important}
+#week .daytitle{
+  text-align:center !important;
+  width:100% !important;
+  margin:0 auto 12px !important;
+}
+main{padding-top:14px}
+
+@media(max-width:700px){
+  .appHeader .brand{
+    width:100%;
+    justify-content:center;
+  }
+  .appHeader .brand img{width:145px;height:36px}
+  .appHeader .brandText h1{font-size:20px}
+  .appHeader .brandText p{font-size:11px}
+  #weekView > .sectionTitle{
+    flex-direction:column !important;
+    align-items:center !important;
+    text-align:center !important;
+  }
+  #weekView > .sectionTitle > div{text-align:center !important}
+}
+
+/* V50: smaller branding, Menu maken directly underneath */
+.appHeader{
+  padding:7px 18px !important;
+}
+.appHeader .brand{
+  justify-content:center !important;
+  gap:10px !important;
+}
+.appHeader .brand img{
+  width:125px !important;
+  height:32px !important;
+}
+.appHeader .brandText h1{
+  font-size:20px !important;
+}
+#weekView > .sectionTitle{
+  margin-top:6px !important;
+}
+@media(max-width:700px){
+  .appHeader .brand img{width:110px !important;height:30px !important}
+  .appHeader .brandText h1{font-size:18px !important}
+}
+
+/* V51: rustige bovenkant */
+.appHeader{
+  min-height:0 !important;
+  padding:8px 16px 5px !important;
+  display:flex !important;
+  justify-content:center !important;
+  align-items:center !important;
+}
+.appHeader .brand{
+  width:100% !important;
+  display:flex !important;
+  justify-content:center !important;
+  align-items:center !important;
+  gap:0 !important;
+}
+.appHeader .brand img{
+  display:block !important;
+  width:105px !important;
+  height:auto !important;
+  max-height:42px !important;
+  object-fit:contain !important;
+}
+.appHeader .brandText{
+  display:none !important;
+}
+
+/* Menu maken direct en rustig onder het logo */
+#weekView > .sectionTitle{
+  margin:8px auto 0 !important;
+  position:relative !important;
+  justify-content:center !important;
+  min-height:44px !important;
+}
+#weekView > .sectionTitle > div{
+  text-align:center !important;
+}
+#weekView > .sectionTitle h2{
+  margin:0 !important;
+}
+#weekView > .sectionTitle .secondary{
+  position:absolute !important;
+  right:0 !important;
+  top:0 !important;
+}
+
+/* verberg de oude introductieregels boven de dagknoppen */
+#weekView > .sectionTitle + p,
+#weekView > .sectionTitle + .muted,
+#weekView > .sectionTitle ~ .weekIntro{
+  display:none !important;
+}
+
+@media(max-width:700px){
+  .appHeader .brand img{width:92px !important}
+  #weekView > .sectionTitle .secondary{
+    position:static !important;
+    margin-left:12px !important;
+  }
+}
+
+/* V53 — definitieve rustige bovenkant */
+.appHeader{
+  position:sticky !important;
+  top:0 !important;
+  z-index:4 !important;
+  display:flex !important;
+  justify-content:center !important;
+  align-items:center !important;
+  min-height:0 !important;
+  height:auto !important;
+  padding:6px 14px 4px !important;
+  margin:0 !important;
+  background:linear-gradient(135deg,var(--sage),#f8e8d6) !important;
+  border-bottom:1px solid #ffffffaa !important;
+}
+.appHeader .appLogo{
+  display:block !important;
+  width:118px !important;
+  height:38px !important;
+  max-width:118px !important;
+  max-height:38px !important;
+  object-fit:contain !important;
+  margin:0 auto !important;
+}
+main{
+  padding-top:8px !important;
+}
+#weekView > .sectionTitle{
+  width:min(900px,calc(100% - 32px)) !important;
+  margin:0 auto 2px !important;
+  min-height:42px !important;
+  display:flex !important;
+  flex-direction:row !important;
+  justify-content:center !important;
+  align-items:center !important;
+  position:relative !important;
+  text-align:center !important;
+}
+#weekView > .sectionTitle > div{
+  width:auto !important;
+  flex:0 1 auto !important;
+  text-align:center !important;
+}
+#weekView > .sectionTitle h2{
+  margin:0 !important;
+  font-size:23px !important;
+}
+#weekView > .sectionTitle > .secondary{
+  position:absolute !important;
+  right:0 !important;
+  top:50% !important;
+  transform:translateY(-50%) !important;
+  margin:0 !important;
+  padding:9px 13px !important;
+}
+#weekView > #week{
+  width:min(900px,calc(100% - 32px)) !important;
+  margin:0 auto !important;
+}
+#week .daytabs{
+  width:max-content !important;
+  max-width:100% !important;
+  margin:4px auto 6px !important;
+  justify-content:center !important;
+}
+#week .dayLegend{
+  display:none !important;
+}
+#week .daytitle{
+  width:100% !important;
+  text-align:center !important;
+  margin:0 auto 10px !important;
+}
+@media(max-width:700px){
+  .appHeader .appLogo{
+    width:105px !important;
+    height:34px !important;
+  }
+  #weekView > .sectionTitle{
+    min-height:76px !important;
+    padding-bottom:34px !important;
+  }
+  #weekView > .sectionTitle > .secondary{
+    top:auto !important;
+    bottom:0 !important;
+    right:50% !important;
+    transform:translateX(50%) !important;
+  }
+  #week .daytabs{
+    width:100% !important;
+    justify-content:flex-start !important;
+    overflow-x:auto !important;
+  }
+}
+
+
+/* V55: extra bestelcategorie bij receptingrediënten */
+.ingRow{
+  grid-template-columns:minmax(180px,2fr) minmax(90px,.7fr) minmax(95px,.7fr) minmax(155px,1.2fr) minmax(120px,1fr) auto !important;
+}
+@media(max-width:900px){
+  .ingRow{grid-template-columns:1fr 1fr !important}
+  .ingRow .wide{grid-column:1/-1}
+}
+
+
+/* V56 — per huis: De Botter / De Haven */
+.houseSwitch{
+  width:min(900px,calc(100% - 32px));
+  margin:4px auto 10px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.houseBtn{
+  background:#fff !important;
+  color:var(--ink) !important;
+  border:2px solid var(--line) !important;
+  padding:10px 12px !important;
+}
+.houseBtn.active{
+  background:var(--green) !important;
+  color:#fff !important;
+  border-color:var(--green) !important;
+}
+
+/* V56 — Bestellen rustig en uitgelijnd */
+#orderView{
+  width:min(1030px,calc(100% - 24px));
+  margin:0 auto;
+}
+.orderPageHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:16px;
+  margin:2px 0 12px;
+}
+.orderPageHead h2{
+  margin:0 0 4px;
+  font-size:24px;
+}
+.orderHeadActions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.orderHouseBadge{
+  display:inline-block;
+  margin:0 0 6px;
+  padding:5px 9px;
+  border-radius:999px;
+  background:var(--sage);
+  font-size:12px;
+  font-weight:800;
+}
+.orderFilters{margin-bottom:14px}
+.orderControlGrid{
+  display:grid;
+  grid-template-columns:1.25fr 1.7fr 1fr .9fr;
+  gap:10px;
+  align-items:stretch;
+}
+.orderInfoBox,.orderDaysBox,.orderQuickBox,.orderSupplierBox{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:12px;
+}
+.orderInfoBox{background:#f7faf4}
+.orderControlTitle{
+  font-size:14px;
+  font-weight:800;
+  margin-bottom:8px;
+}
+.orderDayGrid{
+  display:grid !important;
+  grid-template-columns:repeat(7,minmax(42px,1fr)) !important;
+  gap:6px !important;
+  margin:0 !important;
+}
+.orderDay{
+  min-width:0;
+  padding:10px 4px !important;
+  border-radius:12px !important;
+}
+.orderTools{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:7px !important;
+  margin:0 !important;
+}
+.orderTools button{
+  width:100%;
+  text-align:left;
+  padding:9px 10px;
+}
+.supplierTabs{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:7px !important;
+  margin:0 !important;
+}
+.supplierTab{
+  min-height:66px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:3px;
+  padding:9px 7px !important;
+}
+.supplierTab span{font-size:14px}
+#orders>.orderTitle{margin:8px 0 7px}
+
+/* bestaand besteloverzicht nog iets rustiger */
+.ahGroup{box-shadow:0 4px 14px rgba(60,70,60,.035)}
+.ahHead{padding:9px 12px}
+.ahGroup .orderrow{padding:9px 12px}
+.orderCalc{line-height:1.25}
+.stockInput{column-gap:6px}
+
+@media(max-width:980px){
+  .orderControlGrid{grid-template-columns:1fr 1.5fr}
+}
+@media(max-width:700px){
+  .houseSwitch{grid-template-columns:1fr}
+  #orderView{width:min(100%,calc(100% - 16px))}
+  .orderPageHead{flex-direction:column}
+  .orderHeadActions{justify-content:flex-start}
+  .orderControlGrid{grid-template-columns:1fr}
+  .orderDayGrid{grid-template-columns:repeat(4,1fr) !important}
+}
+
+
+/* V59 — echte weekopslag en weekwisselaar */
+.weekSwitch{width:min(900px,calc(100% - 32px));margin:4px auto 10px;display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center}
+.weekCurrent{text-align:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:7px 10px}
+.weekCurrent b{display:block;font-size:15px}.weekCurrent input{width:auto;max-width:170px;margin-top:4px;padding:5px 8px;font-size:13px}
+@media(max-width:700px){.weekSwitch{grid-template-columns:1fr 1fr}.weekCurrent{grid-column:1/-1;grid-row:1}.weekSwitch button{font-size:13px;padding:9px}}
+</style>
+</head>
+<body>
+<header class="appHeader">
+  <img class="appLogo" src="gastenhuis-logo.png" alt="Het Gastenhuis">
+</header>
+<main>
+<section id="weekView" class="view active">
+ <div class="sectionTitle"><div><h2>🍽️ Menu maken</h2></div><button class="secondary" onclick="resetWeek()">Nieuwe week</button></div>
+ <div class="weekSwitch"><button type="button" class="secondary" onclick="shiftWeek(-7)">‹ Vorige week</button><div class="weekCurrent"><b id="weekRangeLabel"></b><input id="weekPicker" type="date" onchange="pickWeek(this.value)"></div><button type="button" class="secondary" onclick="shiftWeek(7)">Volgende week ›</button></div>
+ <div class="houseSwitch">
+   <button type="button" class="houseBtn" data-house="1" onclick="setHouse(1)">Huis 1 · De Botter</button>
+   <button type="button" class="houseBtn" data-house="2" onclick="setHouse(2)">Huis 2 · De Haven</button>
+ </div>
+ <div id="week" class="weekgrid"></div>
+</section>
+
+
+<section id="menuView" class="view"><div class="actionBar"><button onclick="printCurrent()">🖨️ Print / PDF</button><button class="secondary" onclick="mailCurrent('Menukaart')">✉️ Mailen</button></div>
+ <div class="sectionTitle"><div><h2>📋 Menukaart</h2><div class="small">Automatisch uit je weekmenu. Klaar om door te sturen of te printen.</div></div></div>
+ <div class="toolbar">
+   <div><label>Maandag van deze menuweek</label><input id="menuStart" type="date" onchange="saveMenuSettings();drawMenu()"></div>
+   <div><label>Stijl</label><select id="menuTheme" onchange="saveMenuSettings();drawMenu()"><option value="summer">🌸 Lente / zomer</option><option value="autumn">🍂 Herfst</option><option value="winter">❄️ Winter</option></select></div>
+   <button onclick="window.print()">🖨️ Print / PDF</button>
+ </div>
+ <div id="menuPrint"></div>
+</section>
+<section id="prepView" class="view"><div class="actionBar"><button onclick="printCurrent()">🖨️ Print / PDF</button><button class="secondary" onclick="mailCurrent('Voorbereiden')">✉️ Mailen</button></div>
+ <div class="sectionTitle"><div><h2>🔪 Voorbereiden</h2><div class="small">Wat je vooruit kunt voorbereiden op basis van het weekmenu.</div></div></div>
+ <div id="prep"></div>
+</section>
+
+<section id="orderView" class="view">
+ <div class="orderPageHead">
+   <div>
+     <div id="orderHouseBadge" class="orderHouseBadge"></div>
+     <h2>🛒 Bestellen</h2>
+     <div class="small">Kies de dagen en leverancier. De voorraad wordt direct van de benodigde hoeveelheid afgetrokken.</div>
+   </div>
+   <div class="orderHeadActions">
+     <button onclick="printCurrent()">🖨️ Print / PDF</button>
+     <button class="secondary" onclick="mailCurrent('Bestellijst')">✉️ Mailen</button>
+   </div>
+ </div>
+ <div id="orderFilters" class="orderFilters"></div>
+ <div id="orders"></div>
+</section>
+
+<section id="recipesView" class="view"><div class="actionBar"><button onclick="printCurrent()">🖨️ Print / PDF</button><button class="secondary" onclick="mailCurrent('Beheer')">✉️ Mailen</button></div>
+ <div class="sectionTitle"><div><h2>➕ Toevoegen</h2><div class="small">Voeg een nieuw gerecht, product of recept toe. Het verschijnt daarna centraal voor iedereen in Menu maken.</div></div><button onclick="openManage()">+ Nieuw onderdeel</button></div>
+ 
+<div class="onlineNote">Alles wat je hier toevoegt wordt centraal opgeslagen en verschijnt bij iedereen. Bestaande onderdelen kun je hier niet verwijderen of aanpassen.</div><div id="managePanel" class="managePanel open">
+  <div class="sectionTitle"><div><h3>Nieuw onderdeel</h3><div class="small">Na opslaan verschijnt het automatisch in de gekozen lijst bij Menu maken.</div></div></div>
+  <div class="manageGrid">
+    <div><label>Keukennaam</label><input id="mName" placeholder="Bijv. Aardbeienmousse"></div>
+    <div><label>Menunaam voor print</label><input id="mMenuName" placeholder="Bijv. Aardbeienmousse"></div>
+    <div><label>Waar tonen</label><select id="mCat"></select></div>
+    <div><label>Type</label><select id="mType" onchange="manageTypeChanged()"><option value="simple">Los product / portie</option><option value="recipe">Zelfgemaakt recept</option><option value="package">Kant-en-klaar / verpakking</option></select></div>
+    <div id="simpleQty"><label>Hoeveelheid p.p.</label><input id="mQty" type="number" min="0" step="0.01" value="1"></div>
+    <div id="simpleUnit"><label>Eenheid</label><select id="mUnit"><option>g</option><option>ml</option><option>stuk</option><option>el</option><option>bol</option><option>portie</option></select></div>
+    <div><label>Standaard leverancier</label><select id="mSupplier"><option>AH</option><option>Sligro</option></select></div>
+    <div id="packUnitWrap" style="display:none"><label>Besteleenheid</label><input id="mPackUnit" placeholder="bijv. zak 800 g"></div>
+    <div id="yieldWrap" style="display:none"><label>Opbrengst per verpakking</label><input id="mYield" type="number" min="1" step="1" placeholder="bijv. 35"></div>
+    <div class="full helpBox" id="recipeHelp">Bij een zelfgemaakt recept vul je hieronder de ingrediënten <b>per persoon</b> in. Bij een verpakkingsproduct vul je extra ingrediënten <b>per verpakking</b> in; de app rekent ze terug naar p.p.</div>
+    <div class="full"><div class="sectionTitle"><h4 style="margin:0">Ingrediënten</h4><button type="button" class="soft" onclick="addIngredientRow()">+ Ingrediënt</button></div><div id="ingRows" class="ingRows"></div></div>
+    <div class="full"><button onclick="saveManagedItem()">💾 Opslaan</button></div>
+  </div>
+</div>
+<div id="catChips" style="display:none"></div><div id="library" style="display:none"></div>
+ 
+</section>
+</main>
+
+<nav class="bottom">
+<button class="active" data-view="weekView" onclick="showView(this)"><span class="ico">📅</span>Menu maken</button>
+<button data-view="menuView" onclick="showView(this)"><span class="ico">📋</span>Menukaart</button>
+<button data-view="prepView" onclick="showView(this)"><span class="ico">🔪</span>Voorbereiden</button>
+<button data-view="orderView" onclick="showView(this)"><span class="ico">🛒</span>Bestellen</button>
+<button data-view="recipesView" onclick="showView(this)"><span class="ico">📚</span>Toevoegen</button>
+</nav>
+<script>
+const days=['Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag','Zondag'];
+
+const HOUSES={1:'De Botter',2:'De Haven'};
+let activeHouse=+(localStorage.getItem('gh56_activeHouse')||1);
+
+function currentWeekStart(){return localStorage.getItem('gh10_menuStart')||defaultMonday()}
+function weekStorageKey(){return `gh59_week_house_${activeHouse}_${currentWeekStart()}`}
+function enabledStorageKey(){return `gh59_enabled_house_${activeHouse}_${currentWeekStart()}`}
+function orderStorageKey(){return `gh59_order_house_${activeHouse}_${currentWeekStart()}`}
+function availableStockStorageKey(){return `gh56_available_stock_house_${activeHouse}`}
+function basisStockStorageKey(){return `gh56_basis_stock_house_${activeHouse}`}
+
+function refreshHouseUI(){
+ document.querySelectorAll('.houseBtn').forEach(b=>b.classList.toggle('active',+b.dataset.house===activeHouse));
+ const badge=document.getElementById('orderHouseBadge');
+ if(badge)badge.textContent=`📍 Huis ${activeHouse} · ${HOUSES[activeHouse]}`;
+}
+
+async function setHouse(id){
+ activeHouse=+id;
+ localStorage.setItem('gh56_activeHouse',String(activeHouse));
+ week=JSON.parse(localStorage.getItem(weekStorageKey())||'null')||Object.fromEntries(days.map(d=>[d,blank()]));
+ enabledDays=JSON.parse(localStorage.getItem(enabledStorageKey())||'[]');
+ orderDays=JSON.parse(localStorage.getItem(orderStorageKey())||'[]');
+ availableStock=JSON.parse(localStorage.getItem(availableStockStorageKey())||'{}');
+ basisStock=JSON.parse(localStorage.getItem(basisStockStorageKey())||'{}');
+ refreshHouseUI();
+ await loadCentralWeek();
+ drawWeek();drawOrders();drawPrep();drawMenu();drawBasisStock();
+}
+
+const norms={soep:[250,'ml'],groente:[200,'g'],vlees:[100,'g'],vis:[100,'g'],pasta:[50,'g'],rijst:[40,'g'],aardappel:[200,'g'],dessert:[150,'g/ml'],saus:[50,'ml'],lunchsalade:[2,'el'],stuk:[1,'stuk'],ijs:[1,'bol']};
+const cats={lunch:'Lunch',main:'Vlees / vis',veg:'Vega hoofdgerecht',veglunch:'Vega lunch',vegetable:'Groente',salad:'Salade erbij',starch:'Aardappel / rijst / pasta',stamppot:'Stamppot',sauce:'Saus',dessert:'Toetje',vegdessert:'Vega toetje',fruit:'Handfruit / fruit'};
+const L=[
+['l_ei','Eiersalade','lunch',2,'el'],['l_kbou','Kippenbouillon verse tuinkruiden','lunch',250,'ml'],['l_kro','Kroket','lunch',1,'stuk'],['l_pas','Pasteitje met ragout','lunch',1,'stuk'],['l_pre','Preisoep','lunch',250,'ml'],['l_tom','Tomatensoep','lunch',250,'ml'],['l_ton','Tonijnsalade','lunch',2,'el'],['l_eitje','Gekookt eitje','lunch',1,'stuk'],
+['vl_ei','Eiersalade','veglunch',2,'el'],['vl_pre','Preisoep','veglunch',250,'ml'],['vl_tom','Tomatensoep','veglunch',250,'ml'],['vl_vegkro','Vegetarische kroket','veglunch',1,'stuk'],
+['f_appel','Appel','fruit',1,'stuk'],['f_banaan','Banaan','fruit',1,'stuk'],['f_peer','Peer','fruit',1,'stuk'],
+['f_mandarijn','Mandarijn','fruit',1,'stuk'],['f_sinaasappel','Sinaasappel','fruit',1,'stuk'],
+['f_druiven','Druiven','fruit',100,'g'],['f_meloen','Meloen','fruit',150,'g'],['f_fruitsalade','Fruitsalade vers','fruit',150,'g'],
+['vd_choc','Chocoladevla','vegdessert',150,'ml'],['vd_fruit','Fruitsalade vers','vegdessert',150,'g'],['vd_gries','Griesmeelpap','vegdessert',150,'ml'],
+['vd_cal_milk','Callebaut chocolademousse melk','vegdessert',1,'portie'],
+['vd_cal_dark','Callebaut chocolademousse dark','vegdessert',1,'portie'],
+['vd_cal_white','Callebaut chocolademousse white','vegdessert',1,'portie'],['vd_ijs','IJs','vegdessert',1,'bol'],['vd_van','Vanillevla','vegdessert',150,'ml'],['vd_yog','Yoghurt','vegdessert',150,'g'],
+['m_blind','Blinde vink','main',100,'g'],['m_bolo','Bolognese','main',100,'g'],['m_bal','Gehaktbal','main',100,'g'],['m_hach','Hachee','main',100,'g'],['m_kerrie','Kip kerrie','main',100,'g'],['m_kipfilet','Kipfilet','main',100,'g'],['m_pas','Pasteitje met ragout','main',1,'stuk'],['m_visstick','Visstick','main',100,'g'],['m_witvis','Witvis','main',100,'g'],['m_zalm','Zalm','main',100,'g'],
+['v_ballet','Vegetarische balletjes','veg',100,'g'],['v_bieten','Bietenburger','veg',100,'g'],['v_bonen','Bonenburger','veg',100,'g'],['v_burger','Vegetarische burger','veg',100,'g'],['v_falafel','Falafel','veg',100,'g'],['v_frittata','Frittata','veg',150,'g'],['v_gehakt','Vegetarisch gehakt','veg',100,'g'],['v_gehaktbal','Vegetarische gehaktbal','veg',100,'g'],['v_groenteburger','Groenteburger','veg',100,'g'],['v_groentekoek','Groentekoekjes','veg',100,'g'],['v_groenteschnitzel','Groenteschnitzel','veg',100,'g'],['v_kaasschnitzel','Kaasschnitzel','veg',100,'g'],['v_omelet','Omelet','veg',150,'g'],['v_schnitzel','Vegetarische schnitzel','veg',100,'g'],['v_veggieworst','Vegetarische worst','veg',100,'g'],
+['v_paprika','Gevulde paprika','veg',1,'stuk'],['v_courgette','Gevulde courgette','veg',0.5,'stuk'],['v_quiche','Vegetarische quiche','veg',1,'portie'],['v_spinazietaart','Kaas-spinazietaart','veg',1,'portie'],['v_hartigetaart','Hartige groentetaart','veg',1,'portie'],['v_lasagne','Vegetarische lasagne','veg',1,'portie'],['v_groentelasagne','Groentelasagne','veg',1,'portie'],['v_cannelloni','Vegetarische cannelloni','veg',1,'portie'],['v_pesto','Pasta pesto','veg',1,'portie'],['v_groentepasta','Pasta met groentesaus','veg',1,'portie'],['v_bolognese','Vegetarische bolognese','veg',1,'portie'],['v_nasi','Vegetarische nasi','veg',1,'portie'],['v_bami','Vegetarische bami','veg',1,'portie'],['v_tjap','Tjap tjoy','veg',1,'portie'],['v_groentecurry','Groentecurry','veg',1,'portie'],['v_massaman','Vegetarische massaman curry','veg',1,'portie'],['v_panang','Vegetarische panang curry','veg',1,'portie'],['v_kikker','Kikkererwtencurry','veg',1,'portie'],['v_linzen','Linzencurry','veg',1,'portie'],['v_chili','Chili sin carne','veg',1,'portie'],['v_ragout','Vegetarische ragout','veg',150,'g'],['v_pasteitje','Pasteitje met vegetarische ragout','veg',1,'stuk'],['v_stoof','Groentestoof','veg',250,'g'],
+['g_and','Andijvie','vegetable',200,'g'],['g_bloem','Bloemkool','vegetable',200,'g'],['g_broc','Broccoli','vegetable',200,'g'],['g_cour','Courgette','vegetable',200,'g'],['g_doper','Doperwten','vegetable',200,'g'],['g_prei','Prei','vegetable',200,'g'],['g_snij','Snijbonen','vegetable',200,'g'],['g_sper','Sperziebonen','vegetable',200,'g'],['g_spin','Spinazie','vegetable',200,'g'],['g_spruit','Spruitjes','vegetable',200,'g'],['g_witlof','Witlof','vegetable',200,'g'],['g_wortel','Wortel','vegetable',200,'g'],
+['r_sla','Gemengde sla','salad',0,'recept'],['r_ijs','IJsbergsla','salad',0,'recept'],['r_rauw','Rauwkostsalade','salad',0,'recept'],
+['z_gekookt','Aardappelen – gekookt','starch',200,'g'],['z_gebakken','Aardappelen – gebakken','starch',200,'g'],['z_gratin','Aardappelgratin','starch',200,'g'],['z_bol','Aardappelbolletjes','starch',200,'g'],['z_kroket','Aardappelkroketjes','starch',200,'g'],['z_partjes','Aardappelpartjes uit de oven','starch',200,'g'],['z_kriel','Krieltjes','starch',200,'g'],['z_mac','Macaroni (droog)','starch',50,'g'],['z_penne','Penne (droog)','starch',50,'g'],['z_puree','Puree','starch',200,'g'],['z_bas','Rijst – basmati (droog)','starch',40,'g'],['z_wit','Rijst – wit (droog)','starch',40,'g'],['z_spag','Spaghetti (droog)','starch',50,'g'],['z_tag','Tagliatelle (droog)','starch',50,'g'],
+['st_and','Andijviestamppot','stamppot',0,'recept'],['st_boer','Boerenkoolstamppot','stamppot',0,'recept'],['st_hut','Hutspot','stamppot',0,'recept'],['st_pre','Preistamppot','stamppot',0,'recept'],['st_snij','Snijbonenstamppot','stamppot',0,'recept'],['st_zomer','Zomerstamppot','stamppot',0,'recept'],['st_zuur','Zuurkoolstamppot','stamppot',0,'recept'],
+['s_champ','Champignonroomsaus','sauce',50,'ml'],['s_dil','Dillesaus','sauce',50,'ml'],['s_jus','Jus','sauce',50,'ml'],['s_ker','Kerriesaus','sauce',50,'ml'],['s_room','Roomsaus','sauce',50,'ml'],
+['d_choc','Chocoladevla','dessert',150,'ml'],
+['d_cal_milk','Callebaut chocolademousse melk','dessert',1,'portie'],
+['d_cal_dark','Callebaut chocolademousse dark','dessert',1,'portie'],
+['d_cal_white','Callebaut chocolademousse white','dessert',1,'portie'],['d_fruit','Fruitsalade vers','dessert',150,'g'],['d_gries','Griesmeelpap','dessert',150,'ml'],['d_ijs','IJs','dessert',1,'bol'],['d_kwark','Kwark','dessert',150,'g'],['d_pud','Pudding','dessert',150,'g'],['d_van','Vanillevla','dessert',150,'ml'],['d_yog','Yoghurt','dessert',150,'g']
+].map(x=>({id:x[0],name:x[1],cat:x[2],qty:x[3],unit:x[4]}));
+const recipes={
+'s_appelcompote':[['Appels',120,'g'],['Suiker',5,'g'],['Kaneel',0.2,'g']],
+'f_fruitsalade':[['Appel',30,'g'],['Peer',25,'g'],['Banaan',20,'g'],['Druiven',25,'g'],['Mandarijn',20,'g'],['Meloen',20,'g'],['Ananas',10,'g'],['Citroensap',3,'ml']],
+'d_cal_milk':[['Callebaut chocolademousse melk',0.0285714286,'zak'],['Melk',28.5714286,'ml']],
+'d_cal_dark':[['Callebaut chocolademousse dark',0.0285714286,'zak'],['Melk',28.5714286,'ml']],
+'d_cal_white':[['Callebaut chocolademousse white',0.0285714286,'zak'],['Melk',28.5714286,'ml']],
+'vd_cal_milk':[['Callebaut chocolademousse melk',0.0285714286,'zak'],['Melk',28.5714286,'ml']],
+'vd_cal_dark':[['Callebaut chocolademousse dark',0.0285714286,'zak'],['Melk',28.5714286,'ml']],
+'vd_cal_white':[['Callebaut chocolademousse white',0.0285714286,'zak'],['Melk',28.5714286,'ml']],
+
+'m_kerrie':[['Kippendij',100,'g'],['Ui',20,'g'],['Kookroom',50,'ml'],['Kerrie',1,'g']],
+'m_bolo':[['Gehakt',100,'g'],['Ui',20,'g'],['Tomaat / passata',125,'g'],['Kruiden',1,'g']],
+'m_pas':[['Pasteibakje',1,'stuk'],['Kip',75,'g'],['Champignons',40,'g'],['Bouillon',60,'ml'],['Kookroom',40,'ml'],['Ui',15,'g'],['Bloem',8,'g'],['Boter',8,'g'],['Kruiden',1,'g']],
+'l_pas':[['Pasteibakje',1,'stuk'],['Kip',75,'g'],['Champignons',40,'g'],['Bouillon',60,'ml'],['Kookroom',40,'ml'],['Ui',15,'g'],['Bloem',8,'g'],['Boter',8,'g'],['Kruiden',1,'g']],
+'l_tom':[['Tomatenpuree',4,'g'],['Tomaten in blik',20,'g'],['Ui',0.08,'stuk'],['Peen',0.08,'stuk']],
+'l_ei':[['Ei',0.5,'stuk'],['Mayonaise',10,'g'],['Kruiden',1,'g']],
+'l_ton':[['Tonijn',30,'g'],['Augurk',10,'g'],['Mayonaise',10,'g'],['Ui',5,'g']],
+'r_sla':[['Sla',35,'g'],['Komkommer',25,'g'],['Tomaat',25,'g'],['Ui',5,'g'],['Dressing',15,'ml']],
+'r_ijs':[['IJsbergsla',35,'g'],['Komkommer',25,'g'],['Tomaat',25,'g'],['Dressing',15,'ml']],
+'r_rauw':[['Wortel',30,'g'],['Komkommer',25,'g'],['Tomaat',25,'g'],['Ui',5,'g'],['Dressing',15,'ml']],
+'st_zomer':[['Aardappelen',200,'g'],['Snijbonen',200,'g'],['Melk',20,'ml'],['Boter',5,'g']],
+'st_and':[['Aardappelen',200,'g'],['Andijvie',200,'g'],['Melk',20,'ml'],['Boter',5,'g']],
+'st_hut':[['Aardappelen',200,'g'],['Wortel',120,'g'],['Ui',80,'g']],
+'st_zuur':[['Aardappelen',200,'g'],['Zuurkool',200,'g']],
+'st_boer':[['Aardappelen',200,'g'],['Boerenkool',200,'g']],
+'d_fruit':[['Appel',30,'g'],['Peer',25,'g'],['Banaan',20,'g'],['Druiven',25,'g'],['Mandarijn',20,'g'],['Meloen',20,'g'],['Ananas',10,'g'],['Citroensap',3,'ml']],
+'vd_fruit':[['Appel',30,'g'],['Peer',25,'g'],['Banaan',20,'g'],['Druiven',25,'g'],['Mandarijn',20,'g'],['Meloen',20,'g'],['Ananas',10,'g'],['Citroensap',3,'ml']],
+'d_gries':[['Melk',135,'ml'],['Griesmeel',15,'g'],['Suiker',8,'g']],
+'v_paprika':[['Paprika',1,'stuk'],['Vegetarisch gehakt',75,'g'],['Rijst',30,'g'],['Ui',15,'g'],['Tomaat',40,'g'],['Geraspte kaas',20,'g']],
+'v_courgette':[['Courgette',0.5,'stuk'],['Vegetarisch gehakt',75,'g'],['Ui',15,'g'],['Tomaat',40,'g'],['Geraspte kaas',20,'g']],
+'v_chili':[['Kidneybonen',80,'g'],['Mais',40,'g'],['Paprika',50,'g'],['Tomaat',100,'g'],['Ui',20,'g'],['Chili kruiden',2,'g']],
+'v_kikker':[['Kikkererwten',100,'g'],['Tomaat',75,'g'],['Kokosmelk',60,'ml'],['Ui',20,'g'],['Currykruiden',2,'g']],
+'v_linzen':[['Linzen',100,'g'],['Tomaat',75,'g'],['Kokosmelk',60,'ml'],['Ui',20,'g'],['Currykruiden',2,'g']],
+'v_groentecurry':[['Gemengde groenten',150,'g'],['Kokosmelk',70,'ml'],['Ui',20,'g'],['Currypasta',10,'g']],
+'v_bolognese':[['Vegetarisch gehakt',100,'g'],['Ui',20,'g'],['Tomaat / passata',125,'g'],['Kruiden',1,'g']],
+'v_pesto':[['Pasta',50,'g'],['Pesto',20,'g'],['Groente',100,'g'],['Geraspte kaas',15,'g']],
+'v_ragout':[['Champignons',80,'g'],['Bouillon',60,'ml'],['Kookroom',40,'ml'],['Ui',15,'g'],['Bloem',8,'g'],['Boter',8,'g'],['Kruiden',1,'g']],
+'v_pasteitje':[['Pasteibakje',1,'stuk'],['Champignons',80,'g'],['Bouillon',60,'ml'],['Kookroom',40,'ml'],['Ui',15,'g'],['Bloem',8,'g'],['Boter',8,'g'],['Kruiden',1,'g']],
+'v_stoof':[['Gemengde groenten',180,'g'],['Tomaat',60,'g'],['Ui',20,'g'],['Bouillon',40,'ml']]
+};
+let library=JSON.parse(localStorage.getItem('gh39_library')||'null')||JSON.parse(localStorage.getItem('gh11_library')||'null')||L;
+let customRecipes=JSON.parse(localStorage.getItem('gh39_customRecipes')||'{}');
+let itemMeta=JSON.parse(localStorage.getItem('gh39_itemMeta')||'{}');
+let ingredientSuppliers=JSON.parse(localStorage.getItem('gh39_ingredientSuppliers')||'{}');
+let ingredientOrderCategories={};
+Object.assign(recipes,customRecipes);
+
+const SUPABASE_URL='https://cttotbzkcluauzzgnybh.supabase.co';
+const SUPABASE_KEY='sb_publishable_k3vjLo3RzAfyi8mhz7ppKA_9Y1XxRTX';
+const SB_HEADERS={'apikey':SUPABASE_KEY,'Content-Type':'application/json'};
+async function sb(path,options={}){
+  const r=await fetch(SUPABASE_URL+'/rest/v1/'+path,{...options,headers:{...SB_HEADERS,...(options.headers||{})}});
+  if(!r.ok){const msg=await r.text();throw new Error(`${r.status} ${r.statusText}: ${msg}`);}
+  if(r.status===204)return null;
+  const txt=await r.text(); return txt?JSON.parse(txt):null;
+}
+function setSync(msg,ok=true){
+  const t=document.getElementById('syncText'),d=document.getElementById('syncDot');
+  if(t)t.textContent=msg;
+  if(d){d.classList.remove('ok','err');d.classList.add(ok?'ok':'err')}
+}
+const blank=()=>({lunchPeople:0,dinnerPeople:0,dessertPeople:0,lunch:'',main:'',vegetable:'',salad:'',starch:'',stamppot:'',sauce:'',dessert:'',
+vegLunchPeople:0,vegDinnerPeople:0,vegDessertPeople:0,vegLunch:'',vegMain:'',vegVegetable:'',vegSalad:'',vegStarch:'',vegStamppot:'',vegSauce:'',vegDessert:'',fruit:'',fruitItems:[],fruitPeople:0,note:''});
+let week=JSON.parse(localStorage.getItem(weekStorageKey())||'null')||Object.fromEntries(days.map(d=>[d,blank()]));
+async function loadCentralItems(){
+ try{
+  const [ps,rs,ris]=await Promise.all([
+    sb('products?active=eq.true&select=*'),
+    sb('recipes?active=eq.true&select=*'),
+    sb('recipe_ingredients?select=*')
+  ]);
+  const localBase=library.filter(x=>!String(x.id).startsWith('db_'));
+  const added=[];
+  (ps||[]).forEach(p=>{
+    const id='db_p_'+p.id;
+    added.push({id,name:p.name,cat:p.category,qty:+p.quantity_per_person||1,unit:p.unit||'stuk'});
+    itemMeta[id]={menuName:p.menu_name||p.name,type:'simple',supplier:p.supplier||'AH',packUnit:p.package_unit||'',yield:+p.portions_per_package||0};
+  });
+  (rs||[]).forEach(r=>{
+    const id='db_r_'+r.id;
+    added.push({id,name:r.name,cat:r.category,qty:0,unit:'recept'});
+    itemMeta[id]={menuName:r.menu_name||r.name,type:'recipe'};
+    const parts=(ris||[]).filter(i=>+i.recipe_id===+r.id).map(i=>[i.ingredient_name,+i.quantity,i.unit]);
+    recipes[id]=parts;
+    (ris||[]).filter(i=>+i.recipe_id===+r.id).forEach(i=>{
+      ingredientSuppliers[i.ingredient_name.toLowerCase()]=i.supplier||'AH';
+      if(i.order_category) ingredientOrderCategories[i.ingredient_name.toLowerCase()]=i.order_category;
+    });
+  });
+  const seen=new Set();
+  library=[...localBase,...added].filter(x=>{const k=x.cat+'|'+x.name.toLowerCase();if(seen.has(k))return false;seen.add(k);return true});
+  drawWeek();drawOrders();drawPrep();
+  setSync('Verbonden · centrale keukenbibliotheek bijgewerkt',true);
+ }catch(e){console.error(e);setSync('Geen verbinding met centrale database',false)}
+}
+function weekStartValue(){return document.getElementById('menuStart')?.value||localStorage.getItem('gh10_menuStart')||defaultMonday()}
+function dateForDay(day){
+ const idx=days.indexOf(day),d=new Date(weekStartValue()+'T12:00:00');d.setDate(d.getDate()+Math.max(0,idx));return d.toISOString().slice(0,10)
+}
+async function loadCentralWeek(){
+ try{
+  const start=weekStartValue(),a=new Date(start+'T12:00:00'),b=new Date(a);b.setDate(a.getDate()+6);
+  const end=b.toISOString().slice(0,10);
+  const rows=await sb(`week_menus?house_id=eq.${activeHouse}&menu_date=gte.${start}&menu_date=lte.${end}&select=*`);
+  const byDate=Object.fromEntries((rows||[]).map(r=>[r.menu_date,r]));
+  week=Object.fromEntries(days.map(d=>[d,blank()]));
+  days.forEach(day=>{
+    const r=byDate[dateForDay(day)]; if(!r)return;
+    let s=blank();
+    s.lunchPeople=+r.lunch_count||0;s.vegLunchPeople=+r.veggie_lunch_count||0;
+    s.dinnerPeople=+r.dinner_count||0;s.vegDinnerPeople=+r.veggie_dinner_count||0;
+    s.dessertPeople=+r.dessert_count||0;s.vegDessertPeople=+r.veggie_dessert_count||0;
+    s.lunch=r.lunch?.id||'';s.vegLunch=r.veggie_lunch?.id||'';
+    Object.assign(s,r.dinner||{}); Object.assign(s,r.veggie_dinner||{});
+    s.dessert=r.dessert?.id||'';s.vegDessert=r.veggie_dessert?.id||'';
+    s.fruitItems=Array.isArray(r.fruit)?r.fruit:[];
+    week[day]=s;
+  });
+  localStorage.setItem(weekStorageKey(),JSON.stringify(week));
+  if(!localStorage.getItem(enabledStorageKey()) && rows?.length){enabledDays=days.filter(day=>!!byDate[dateForDay(day)]);localStorage.setItem(enabledStorageKey(),JSON.stringify(enabledDays));}
+  refreshWeekPicker();drawWeek();drawOrders();drawPrep();drawMenu();
+  setSync(rows?.length ? 'Verbonden · menuweek centraal geladen' : 'Verbonden · centrale database bereikbaar',true);
+ }catch(e){console.error(e);setSync('Centrale menuweek kon niet worden geladen',false)}
+}
+async function saveCentralDay(day){
+ const s=stateFor(day);
+ const payload={
+   house_id:activeHouse,
+   menu_date:dateForDay(day),
+   lunch_count:+s.lunchPeople||0,veggie_lunch_count:+s.vegLunchPeople||0,
+   dinner_count:+s.dinnerPeople||0,veggie_dinner_count:+s.vegDinnerPeople||0,
+   dessert_count:+s.dessertPeople||0,veggie_dessert_count:+s.vegDessertPeople||0,
+   lunch:{id:s.lunch||''},veggie_lunch:{id:s.vegLunch||''},
+   dinner:{main:s.main||'',vegetable:s.vegetable||'',salad:s.salad||'',starch:s.starch||'',stamppot:s.stamppot||'',sauce:s.sauce||''},
+   veggie_dinner:{vegMain:s.vegMain||'',vegVegetable:s.vegVegetable||'',vegSalad:s.vegSalad||'',vegStarch:s.vegStarch||'',vegStamppot:s.vegStamppot||'',vegSauce:s.vegSauce||''},
+   dessert:{id:s.dessert||''},veggie_dessert:{id:s.vegDessert||''},fruit:s.fruitItems||[]
+ };
+ try{
+   await sb('week_menus?on_conflict=house_id,menu_date',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(payload)});
+   setSync('Opgeslagen in centrale keukenapp',true);
+ }catch(e){console.error(e);setSync('Opslaan naar centrale database mislukt',false)}
+}
+
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const sortNL=a=>a.sort((x,y)=>x.name.localeCompare(y.name,'nl',{sensitivity:'base'}));
+function options(cat,val){return '<option value="">— geen —</option>'+sortNL(library.filter(x=>x.cat===cat)).map(x=>`<option value="${x.id}" ${x.id===val?'selected':''}>${esc(x.name)}</option>`).join('')}
+function item(id){return library.find(x=>x.id===id)}
+function menuName(id){let x=item(id);return itemMeta[id]?.menuName||x?.name||''}
+function pickerName(x){
+ let m=itemMeta[x.id];
+ if(m?.supplier && m?.type==='package') return `${x.name} [${m.supplier}]`;
+ return x.name;
+}
+
+function stateFor(d){let raw=week[d]||{},s=Object.assign(blank(),raw);
+ if(raw.people!=null){if(raw.lunchPeople==null)s.lunchPeople=+raw.people||0;if(raw.dinnerPeople==null)s.dinnerPeople=+raw.people||0}
+ if(raw.vegPeople!=null){if(raw.vegLunchPeople==null)s.vegLunchPeople=+raw.vegPeople||0;if(raw.vegDinnerPeople==null)s.vegDinnerPeople=+raw.vegPeople||0}
+ if(raw.vegDinner && !raw.vegMain)s.vegMain=raw.vegDinner;
+ if(raw.dessertPeople==null && raw.dessert)s.dessertPeople=+raw.dinnerPeople||0;
+ if(raw.vegDessertPeople==null && raw.vegDessert)s.vegDessertPeople=+raw.vegDinnerPeople||0;
+ if((!Array.isArray(raw.fruitItems)||!raw.fruitItems.length) && raw.fruit)s.fruitItems=[raw.fruit];
+ return s}
+
+let activeDay=localStorage.getItem('gh28_activeDay')||days[0];
+let enabledDays=JSON.parse(localStorage.getItem(enabledStorageKey())||'[]');
+function toggleEnabledDay(d){
+  activeDay=d;
+  localStorage.setItem('gh28_activeDay',d);
+  enabledDays=enabledDays.includes(d)?enabledDays.filter(x=>x!==d):[...enabledDays,d];
+  enabledDays=days.filter(x=>enabledDays.includes(x));
+  localStorage.setItem(enabledStorageKey(),JSON.stringify(enabledDays));
+  drawWeek();drawOrders();drawPrep();drawMenu();
+}
+function chooseDay(d){
+  activeDay=d;
+  localStorage.setItem('gh28_activeDay',d);
+  drawWeek();
+}
+function labelFor(id,empty='Tik om te kiezen'){return item(id)?.name||empty}
+function dayComplete(s){return !!(s.lunch && (s.main||s.stamppot) && s.dessert)}
+function inlineRow(d,key,cat,icon,label,val,fallback=''){let shown=val?item(val)?.name:(fallback||'Tik om te kiezen');return `<div class="miniRow" onclick="toggleInline('${d}_${key}')"><div class="flowIcon">${icon}</div><div><div class="flowLabel">${label}</div><div class="flowValue">${esc(shown)}</div></div><div class="arrow">⌄</div></div><div id="${d}_${key}" class="inlineChoices">${inlineOptions(d,key,cat,val)}</div>`}
+function inlineOptions(d,key,cat,val){let arr=sortNL(library.filter(x=>x.cat===cat));return `<button class="inlineChoice none" onclick="event.stopPropagation();chooseInline('${d}','${key}','')">— Geen / hetzelfde —</button>`+arr.map(x=>`<button class="inlineChoice ${val===x.id?'selected':''}" onclick="event.stopPropagation();chooseInline('${d}','${key}','${x.id}')">${esc(pickerName(x))}</button>`).join('')}
+function toggleInline(id){let el=document.getElementById(id);let was=el?.classList.contains('open');document.querySelectorAll('.inlineChoices.open').forEach(x=>x.classList.remove('open'));if(el&&!was)el.classList.add('open')}
+function chooseInline(d,key,val){setW(d,key,val)}
+function drawWeek(){let d=activeDay,s=stateFor(d),short={Maandag:'Ma',Dinsdag:'Di',Woensdag:'Wo',Donderdag:'Do',Vrijdag:'Vr',Zaterdag:'Za',Zondag:'Zo'},dessTotal=(+s.dinnerPeople||0)+(+s.vegDinnerPeople||0);
+document.getElementById('week').innerHTML=`<div class="daytabs">${days.map(x=>`<div class="dayPick ${x===d?'active':''}"><button type="button" class="dayToggle ${enabledDays.includes(x)?'on':''}" onclick="toggleEnabledDay('${x}')" title="Dag aan/uit">${enabledDays.includes(x)?'✓':'○'}</button><button type="button" class="dayOpen" onclick="chooseDay('${x}')">${short[x]}</button></div>`).join('')}</div><div class="dayLegend">Klik op ○/✓ om een dag aan/uit te zetten én meteen te openen. Klik op de dagnaam om alleen te openen.</div>
+<div class="daytitle">${d}</div><div class="flow">
+
+<div class="pairGrid">
+<section class="flowSection flowLunch standardCard">
+ <div class="flowHead"><span>🥣 Lunch</span><div class="quickCount"><span>👥</span><input type="number" min="0" value="${s.lunchPeople}" onchange="setW('${d}','lunchPeople',this.value)"></div></div>
+ <div class="flowBody">${inlineRow(d,'lunch','lunch','🥣','Lunch',s.lunch)}</div>
+</section>
+<section class="flowSection flowLunch veggieCard">
+ <div class="flowHead vegaHead"><span>🌱 Vega lunch</span><div class="quickCount"><span>👥</span><input type="number" min="0" value="${s.vegLunchPeople}" onchange="setW('${d}','vegLunchPeople',this.value)"></div></div>
+ <div class="flowBody">${inlineRow(d,'vegLunch','veglunch','🌱','Vega lunch',s.vegLunch,'Zelfde als lunch')}</div>
+ <div class="sameHint">Leeg = hetzelfde als lunch.</div>
+</section>
+</div>
+
+<div class="pairGrid">
+<section class="flowSection flowDinner standardCard">
+ <div class="flowHead"><span>🍽️ Diner</span><div class="quickCount"><span>👥</span><input type="number" min="0" value="${s.dinnerPeople}" onchange="setW('${d}','dinnerPeople',this.value)"></div></div>
+ <div class="flowBody">
+ ${inlineRow(d,'main','main','🥩','Vlees / vis',s.main)}
+ ${inlineRow(d,'starch','starch','🥔','Aardappel / rijst / pasta',s.starch)}
+ ${inlineRow(d,'vegetable','vegetable','🥦','Groente',s.vegetable)}
+ ${inlineRow(d,'salad','salad','🥗','Salade erbij',s.salad)}
+ ${inlineRow(d,'sauce','sauce','🥣','Saus',s.sauce)}
+ ${inlineRow(d,'stamppot','stamppot','🍲','Stamppot',s.stamppot)}
+ </div>
+</section>
+<section class="flowSection flowDinner veggieCard">
+ <div class="flowHead vegaHead"><span>🌱 Veggie diner</span><div class="quickCount"><span>👥</span><input type="number" min="0" value="${s.vegDinnerPeople}" onchange="setW('${d}','vegDinnerPeople',this.value)"></div></div>
+ <div class="flowBody">
+ ${inlineRow(d,'vegMain','veg','🌱','Vega hoofdgerecht',s.vegMain)}
+ ${inlineRow(d,'vegStarch','starch','🥔','Aardappel / rijst / pasta',s.vegStarch,s.starch?'Zelfde: '+item(s.starch)?.name:'Zelfde als diner')}
+ ${inlineRow(d,'vegVegetable','vegetable','🥦','Groente',s.vegVegetable,s.vegetable?'Zelfde: '+item(s.vegetable)?.name:'Zelfde als diner')}
+ ${inlineRow(d,'vegSalad','salad','🥗','Salade erbij',s.vegSalad,s.salad?'Zelfde: '+item(s.salad)?.name:'Zelfde als diner')}
+ ${inlineRow(d,'vegSauce','sauce','🥣','Saus',s.vegSauce,s.sauce?'Zelfde: '+item(s.sauce)?.name:'Zelfde als diner')}
+ ${inlineRow(d,'vegStamppot','stamppot','🍲','Stamppot',s.vegStamppot,s.stamppot?'Zelfde: '+item(s.stamppot)?.name:'Zelfde als diner')}
+ </div>
+</section>
+</div>
+
+<div class="pairGrid">
+<section class="flowSection flowDessert standardCard">
+ <div class="flowHead"><span>🍨 Dessert</span><div class="quickCount"><span>👥</span><input type="number" min="0" value="${s.dessertPeople||0}" onchange="setW('${d}','dessertPeople',this.value)"></div></div>
+ <div class="flowBody">${inlineRow(d,'dessert','dessert','🍨','Dessert',s.dessert)}</div>
+</section>
+<section class="flowSection flowDessert veggieCard">
+ <div class="flowHead"><span>🌱 Vega dessert</span><div class="quickCount"><span>👥</span><input type="number" min="0" value="${s.vegDessertPeople||0}" onchange="setW('${d}','vegDessertPeople',this.value)"></div></div>
+ <div class="flowBody">${inlineRow(d,'vegDessert','vegdessert','🌱','Vega dessert',s.vegDessert,'Zelfde dessert')}</div>
+ <div class="sameHint">Leeg = hetzelfde dessert; het vega-aantal wordt dan bij dat dessert opgeteld.</div>
+</section>
+</div>
+
+<section class="flowSection" style="margin-bottom:14px;border:2px solid #ead29d;background:#fffaf0">
+ <div class="flowHead" style="background:#f6e6b9"><span>🍎 Fruitschaal / handfruit</span><div class="quickCount"><span>👥</span><input type="number" min="0" value="${s.fruitPeople||0}" onchange="setW('${d}','fruitPeople',this.value)"></div></div>
+ <div class="flowBody">
+   <div class="flowLabel">Kies één of meer soorten · totaal wordt verdeeld over de gekozen handfruitsoorten</div>
+   <div class="fruitChosen">${(s.fruitItems||[]).map(id=>`<span class="fruitChip">${esc(item(id)?.name||'')}</span>`).join('')||'<span class="small">Nog niets gekozen</span>'}</div>
+   <div class="fruitChoiceGrid">${sortNL(library.filter(x=>x.cat==='fruit')).map(x=>`<button type="button" class="fruitChoiceBtn ${(s.fruitItems||[]).includes(x.id)?'on':''}" onclick="toggleFruit('${d}','${x.id}')">${(s.fruitItems||[]).includes(x.id)?'✓ ':''}${esc(x.name)}</button>`).join('')}</div>
+   ${(()=>{let ids=(s.fruitItems||[]).filter(id=>item(id)?.unit==='stuk'),n=+s.fruitPeople||0;if(!ids.length||!n)return '';let b=Math.floor(n/ids.length),r=n%ids.length;return `<div class="small" style="margin-top:9px"><b>Verdeling ${n} stuks:</b> ${ids.map((id,i)=>`${esc(item(id)?.name)} ${b+(i<r?1:0)}`).join(' · ')}</div>`})()}
+ </div>
+</section>
+<div class="card"><label>📝 Opmerking</label><textarea class="notearea" placeholder="Alleen als er iets bijzonders is…" onchange="setW('${d}','note',this.value)">${esc(s.note)}</textarea></div>
+</div>`}
+function toggleFruit(d,id){
+  let s=stateFor(d), arr=Array.isArray(s.fruitItems)?[...s.fruitItems]:[];
+  arr=arr.includes(id)?arr.filter(x=>x!==id):[...arr,id];
+  s.fruitItems=arr;
+  s.fruit=''; 
+  week[d]=s;
+  localStorage.setItem(weekStorageKey(),JSON.stringify(week));
+  drawWeek();drawOrders();drawPrep();saveCentralDay(d);
+}
+function setW(d,k,v){week[d]=stateFor(d);week[d][k]=['lunchPeople','dinnerPeople','dessertPeople','vegLunchPeople','vegDinnerPeople','vegDessertPeople','fruitPeople'].includes(k)?Math.max(0,+v||0):v;localStorage.setItem(weekStorageKey(),JSON.stringify(week));drawWeek();drawOrders();drawPrep();saveCentralDay(d)}
+function copyMainToVeg(d){let s=stateFor(d);s.vegStarch=s.starch;s.vegVegetable=s.vegetable;s.vegSalad=s.salad;s.vegSauce=s.sauce;s.vegStamppot=s.stamppot;if(s.dessert){let same=library.find(x=>x.cat==='vegdessert'&&x.name===item(s.dessert)?.name);if(same)s.vegDessert=same.id}week[d]=s;localStorage.setItem(weekStorageKey(),JSON.stringify(week));drawWeek();drawOrders()}
+async function resetWeek(){if(confirm('Deze menuweek leegmaken? Dit wist alleen '+weekLabelFromStart(currentWeekStart())+' van '+HOUSES[activeHouse]+'.')){try{let start=currentWeekStart(),a=new Date(start+'T12:00:00'),b=new Date(a);b.setDate(a.getDate()+6);let end=b.toISOString().slice(0,10);await sb(`week_menus?house_id=eq.${activeHouse}&menu_date=gte.${start}&menu_date=lte.${end}`,{method:'DELETE',headers:{'Prefer':'return=minimal'}})}catch(e){console.error(e);return alert('Wissen uit centrale database mislukt. Er is niets lokaal gewist.')}week=Object.fromEntries(days.map(d=>[d,blank()]));enabledDays=[];orderDays=[];localStorage.setItem(weekStorageKey(),JSON.stringify(week));localStorage.setItem(enabledStorageKey(),'[]');localStorage.setItem(orderStorageKey(),'[]');drawWeek();drawOrders();drawPrep();drawMenu()}}
+function components(id){let x=item(id);if(!x)return[];return recipes[id]||[[x.name,x.qty,x.unit]]}
+function totals(selectedDays=days){
+ let t={};
+ selectedDays.forEach(d=>{
+   let s=stateFor(d),
+       lp=+s.lunchPeople||0, dp=+s.dinnerPeople||0, dep=+s.dessertPeople||0,
+       vlp=+s.vegLunchPeople||0, vdp=+s.vegDinnerPeople||0, vdep=+s.vegDessertPeople||0;
+   function add(id,count){
+     if(!id||!count)return;
+     components(id).forEach(([n,q,u])=>{
+       let key=n+'|'+u;
+       t[key]=(t[key]||0)+q*count;
+     });
+   }
+   add(s.lunch,lp);
+   add(s.vegLunch||s.lunch,vlp);
+
+   add(s.main,dp); add(s.starch,dp); add(s.vegetable,dp); add(s.salad,dp); add(s.sauce,dp); add(s.stamppot,dp);
+
+   add(s.vegMain,vdp);
+   add(s.vegStarch||s.starch,vdp);
+   add(s.vegVegetable||s.vegetable,vdp);
+   add(s.vegSalad||s.salad,vdp);
+   add(s.vegSauce||s.sauce,vdp);
+   add(s.vegStamppot||s.stamppot,vdp);
+
+   add(s.dessert,dep);
+   add(s.vegDessert||s.dessert,vdep);
+
+   {
+   let fruitIds=(s.fruitItems||[]).filter(Boolean);
+   let totalFruit=Math.max(0,+s.fruitPeople||0);
+   if(fruitIds.length && totalFruit){
+     // Handfruit: one total piece per resident, divided as evenly as possible.
+     // Non-piece fruit choices (e.g. fresh fruit salad) keep their recipe-based calculation.
+     let handIds=fruitIds.filter(fid=>item(fid)?.unit==='stuk');
+     let otherIds=fruitIds.filter(fid=>item(fid)?.unit!=='stuk');
+     if(handIds.length){
+       let base=Math.floor(totalFruit/handIds.length);
+       let rest=totalFruit%handIds.length;
+       handIds.forEach((fid,i)=>add(fid,base+(i<rest?1:0)));
+     }
+     // If a non-piece fruit item is selected, treat it as a separate prepared-fruit choice
+     // for the entered number of people.
+     otherIds.forEach(fid=>add(fid,totalFruit));
+   }
+ }
+ });
+ return t;
+}
+function fmt(q,u){if(u==='g'&&q>=1000)return (q/1000).toLocaleString('nl-NL',{maximumFractionDigits:2})+' kg';if(u==='ml'&&q>=1000)return (q/1000).toLocaleString('nl-NL',{maximumFractionDigits:2})+' L';return q.toLocaleString('nl-NL',{maximumFractionDigits:2})+' '+u}
+let orderDays=JSON.parse(localStorage.getItem(orderStorageKey())||'[]');
+function syncOrderDaysFromMenu(){
+  if(!orderDays.length && Array.isArray(enabledDays) && enabledDays.length){
+    orderDays=[...enabledDays];
+    localStorage.setItem(orderStorageKey(),JSON.stringify(orderDays));
+  }
+}
+function toggleOrderDay(d){orderDays=orderDays.includes(d)?orderDays.filter(x=>x!==d):[...orderDays,d];orderDays=days.filter(x=>orderDays.includes(x));localStorage.setItem(orderStorageKey(),JSON.stringify(orderDays));drawOrders()}
+function setOrderDays(mode){
+  orderDays=mode==='all'?[...days]:[];
+  localStorage.setItem(orderStorageKey(),JSON.stringify(orderDays));
+  drawOrders();
+}
+function useMenuDays(){
+  orderDays=[...(enabledDays||[])];
+  localStorage.setItem(orderStorageKey(),JSON.stringify(orderDays));
+  drawOrders();
+}
+const ahSections=[
+['🥬 Groente & fruit',['groente','fruit']],
+['🥩 Vlees, vis & vega',['vleesvis']],
+['🥔 Aardappelen, rijst & pasta',['zetmeel']],
+['🥛 Zuivel & gekoeld',['zuivel']],
+['🥫 Houdbaar & koken',['houdbaar']],
+['🧊 Diepvries',['diepvries']],
+['🍞 Brood & lunch',['brood']],
+['📦 Overig',['overig']]
+];
+function ahCategory(name){
+ let n=name.toLowerCase();
+ if(ingredientOrderCategories[n]) return ingredientOrderCategories[n];
+ const has=(...a)=>a.some(x=>n.includes(x));
+ if(has('broccoli','bloemkool','sperzie','snijboon','wortel','worteltjes','prei','ui','champignon','sla','komkommer','tomaat','paprika','courgette','spinazie','spitskool','biet','doperwt','mais','rauwkost','gemengde groenten','fruit','appel','peer','banaan','druif','aardbei','framboos','citroen','sinaasappel','mandarijn','meloen','ananas')) return 'groente';
+ if(has('kip','kippendij','gehakt','blinde vink','schnitzel','braadworst','worst','vis','zalm','kabeljauw','tonijn','garnaal','vegetarisch gehakt','vega','falafel','burger')) return 'vleesvis';
+ if(has('aardappel','kriel','rijst','pasta','macaroni','spaghetti','noodle','couscous')) return 'zetmeel';
+ if(has('melk','kookroom','slagroom','room','yoghurt','kwark','vla','boter','kaas','mascarpone','burrata')) return 'zuivel';
+ if(has('diepvries','ijs','kroket')) return 'diepvries';
+ if(has('brood','wrap','cracker','pasteibak','beschuit')) return 'brood';
+ if(has('bouillon','mayonaise','mayo','kerrie','curry','kruiden','maizena','bloem','suiker','passata','tomatenpuree','kokosmelk','pesto','jus','saus','dressing','kidneybonen','kikkererwt','linzen','olie','azijn','ketjap')) return 'houdbaar';
+ return 'overig'
+}
+let availableStock=JSON.parse(localStorage.getItem(availableStockStorageKey())||'{}');
+function stockKey(n,u){return n+'|'+u}
+function setAvailableStock(n,u,v){let k=stockKey(n,u),q=Math.max(0,parseFloat(v)||0);if(q)availableStock[k]=q;else delete availableStock[k];localStorage.setItem(availableStockStorageKey(),JSON.stringify(availableStock));drawOrders()}
+function netNeeded(n,q,u){let have=+availableStock[stockKey(n,u)]||0;return Math.max(0,q-have)}
+function packageMetaByName(n){
+ let id=Object.keys(itemMeta).find(id=>item(id)?.name===n && itemMeta[id]?.type==='package');
+ return id?itemMeta[id]:null;
+}
+function orderFmt(n,q,u){
+ let net=netNeeded(n,q,u), pm=packageMetaByName(n);
+ if(u==='verpakking'&&pm){
+   let c=Math.ceil(net-1e-9);return `${c} × ${pm.packUnit||'verpakking'}`;
+ }
+ if(n.toLowerCase().includes('callebaut chocolademousse')&&u==='zak'){
+   let bags=Math.ceil(net-1e-9);return `${bags} zak${bags===1?'':'ken'} × 800 g · + ${bags} L melk`;
+ }
+ return fmt(net,u)
+}
+let activeSupplier=localStorage.getItem('gh22_supplier')||'AH';
+function setSupplier(s){activeSupplier=s;localStorage.setItem('gh22_supplier',s);drawOrders()}
+function preferredSupplier(n){
+ let custom=ingredientSuppliers[n.toLowerCase()];if(custom)return custom;
+ let known=Object.values(basisStockGroups).flat().find(x=>x[0].toLowerCase()===n.toLowerCase());
+ if(known)return known[2];
+ let x=n.toLowerCase();
+ if(/bouillonpoeder|juspoeder|alsa|callebaut|cacaopoeder|chocolade|olijfolie|zonnebloemolie|grote verpakking/.test(x))return 'Sligro';
+ return 'AH';
+}
+function drawOrders(){
+ refreshHouseUI();
+ syncOrderDaysFromMenu();
+ let short={Maandag:'Ma',Dinsdag:'Di',Woensdag:'Wo',Donderdag:'Do',Vrijdag:'Vr',Zaterdag:'Za',Zondag:'Zo'};
+ document.getElementById('orderFilters').innerHTML=`
+ <div class="orderControlGrid">
+   <div class="orderInfoBox">
+     <div class="orderControlTitle">ℹ️ Uitleg</div>
+     <div class="small">Kies alleen de dagen waarvoor je wilt bestellen. Fruit uit fruitsalade en fruitschaal wordt per fruitsoort samengevoegd. Vul bij voorraad alleen in wat er werkelijk nog in dit huis aanwezig is.</div>
+   </div>
+   <div class="orderDaysBox">
+     <div class="orderControlTitle">Kies de dagen</div>
+     <div class="orderDayGrid">${days.map(d=>`<button class="orderDay ${orderDays.includes(d)?'active':''}" onclick="toggleOrderDay('${d}')">${orderDays.includes(d)?'✓ ':''}${short[d]}</button>`).join('')}</div>
+   </div>
+   <div class="orderQuickBox">
+     <div class="orderControlTitle">Snel kiezen</div>
+     <div class="orderTools">
+       <button class="secondary" onclick="useMenuDays()">Gebruik menu-dagen</button>
+       <button class="secondary" onclick="setOrderDays('all')">Hele week</button>
+       <button class="secondary" onclick="setOrderDays('none')">Alles wissen</button>
+     </div>
+   </div>
+   <div class="orderSupplierBox">
+     <div class="orderControlTitle">Leverancier</div>
+     <div class="supplierTabs">
+       <button class="supplierTab ${activeSupplier==='AH'?'active':''}" onclick="setSupplier('AH')">🛒<span>AH</span></button>
+       <button class="supplierTab ${activeSupplier==='Sligro'?'active':''}" onclick="setSupplier('Sligro')">📦<span>Sligro</span></button>
+     </div>
+   </div>
+ </div>`;
+
+ let selected=days.filter(d=>orderDays.includes(d)), t=totals(selected);
+ let title=selected.length?selected.map(d=>short[d]).join(' + '):'Geen dagen geselecteerd';
+ let grouped={groente:[],vleesvis:[],zetmeel:[],zuivel:[],houdbaar:[],diepvries:[],brood:[],overig:[]};
+
+ Object.entries(t).forEach(([k,q])=>{
+   let [n,u]=k.split('|');
+   if(preferredSupplier(n)===activeSupplier) grouped[ahCategory(n)].push([n,q,u,false]);
+ });
+
+ Object.entries(basisStock).forEach(([n,q])=>{
+   if(!q)return;
+   let inf=stockInfo(n);
+   if(inf.supplier!==activeSupplier)return;
+   grouped[ahCategory(n)].push([n,q,inf.unit,true]);
+ });
+
+ Object.values(grouped).forEach(a=>a.sort((x,y)=>x[0].localeCompare(y[0],'nl')));
+ let sectionMap={groente:'🥬 Groente & fruit',vleesvis:'🥩 Vlees, vis & vega',zetmeel:'🥔 Aardappelen, rijst & pasta',zuivel:'🥛 Zuivel & gekoeld',houdbaar:'🥫 Houdbaar & koken',diepvries:'🧊 Diepvries',brood:'🍞 Brood & lunch',overig:'📦 Overig'};
+ let body=Object.entries(grouped).filter(([k,a])=>a.length).map(([k,a])=>`
+ <section class="ahGroup"><div class="ahHead">${sectionMap[k]}</div>
+ ${a.map(([n,q,u,manual])=>manual
+ ?`<div class="orderrow"><div>✓ ${esc(n)}</div><div class="qty">${q} ${esc(u)}</div></div>`
+ :`<div class="orderrow stockable"><div><b>${esc(n)}</b><div class="orderCalc">Nodig: ${fmt(q,u)}${(+availableStock[stockKey(n,u)]||0)?` · voorraad: ${fmt(+availableStock[stockKey(n,u)],u)}`:''}</div></div><div class="stockInput"><span class="small">Voorraad</span><input type="number" min="0" step="0.1" value="${availableStock[stockKey(n,u)]||''}" placeholder="0" onchange="setAvailableStock('${n.replace(/'/g,"\'")}','${u}',this.value)"><span class="qty">${orderFmt(n,q,u)}</span></div></div>`).join('')}
+ </section>`).join('');
+
+ document.getElementById('orders').innerHTML=`<div class="orderTitle">📍 ${HOUSES[activeHouse]} · ${activeSupplier==='AH'?'🛒 AH':'📦 Sligro'} — ${title}</div>
+ ${Object.keys(basisStock).length?'<div class="small" style="margin-bottom:10px">✓ = handmatig toegevoegd uit Basisvoorraad</div>':''}
+ ${body||(selected.length?`<div class="card"><div class="empty"><b>Nog geen bestelregels voor ${activeSupplier}.</b><br><br>Geselecteerd: ${selected.map(d=>short[d]).join(' + ')}.<br>Controleer of op die dagen een gerecht én een aantal groter dan 0 staat. Wissel eventueel ook tussen AH en Sligro.</div></div>`:'<div class="card"><div class="empty">Kies hierboven één of meer dagen.</div></div>')}`;
+}
+function drawPrep(){let rows=[];days.filter(d=>enabledDays.includes(d)).forEach(d=>{let s=stateFor(d);
+let regular=[item(s.lunch)?.name,item(s.main)?.name,item(s.stamppot)?.name,item(s.salad)?.name,item(s.dessert)?.name].filter(Boolean);
+let veg=[item(s.vegLunch)?.name,item(s.vegMain)?.name,item(s.vegStamppot)?.name,item(s.vegDessert)?.name].filter(Boolean);
+if(regular.length||veg.length||s.note)rows.push(`<div class="card"><b>${d}</b><div class="recipeParts">${regular.map(n=>'• '+esc(n)).join('<br>')}${veg.length?'<br><b>🌱 Vega</b><br>'+veg.map(n=>'• '+esc(n)).join('<br>'):''}${s.note?'<br><br><b>📝 '+esc(s.note)+'</b>':''}</div></div>`)});
+document.getElementById('prep').innerHTML=rows.join('')||'<div class="card empty">Zodra het weekmenu gevuld is, verschijnt hier je prep-overzicht.</div>'}
+let activeCat='vegetable';
+
+const basisStockGroups={
+'Zuivel & dranken':[
+ ['Boursin','pak','AH'],['Geraspte kaas','zak','AH'],
+ ['Melk','liter','AH'],['Karnemelk','liter','AH'],['Halfvolle melk','liter','AH'],['Volle melk','liter','AH'],
+ ['Kookroom','liter','AH'],['Slagroom','liter','Sligro'],['Yoghurt','liter','AH'],['Vla','liter','AH'],
+ ['Limonadesiroop','fles','AH'],['Sinaasappelsap','liter','AH'],['Appelsap','liter','AH']
+],
+'Vetten & koken':[
+ ['Boter','pak','AH'],['Bakboter / vloeibare margarine','fles','AH'],['Olijfolie','liter','Sligro'],['Zonnebloemolie','liter','Sligro']
+],
+'Bouillon & basis':[
+ ['Runderbouillonpoeder','pot','Sligro'],['Kippenbouillonpoeder','pot','Sligro'],['Groentebouillonpoeder','pot','Sligro'],
+ ['Visbouillonpoeder','pot','Sligro'],['Juspoeder','pot','Sligro']
+],
+'Groente-basis':[
+ ['Uien','kg','AH'],['Knoflook','net','AH'],['Wortel / peen','kg','AH'],['Prei','kg','AH'],['Bleekselderij','stuk','AH']
+],
+'Binden & koken':[
+ ['Bloem','kg','Sligro'],['Maizena','pak','AH'],['Paneermeel / panko','pak','AH'],['Suiker','kg','Sligro'],
+ ['Tomatenpuree','blik','AH'],['Passata','fles','AH']
+],
+'Sauzen & smaakmakers':[
+ ['Mayonaise','pot','Sligro'],['Mosterd','pot','AH'],['Ketchup','fles','AH'],['Ketjap','fles','Sligro'],
+ ['Sojasaus','fles','Sligro'],['Azijn','fles','AH'],['Citroensap','fles','AH'],['Honing','pot','AH']
+],
+'Kruiden':[
+ ['Zout','pot','Sligro'],['Peper','pot','Sligro'],['Paprikapoeder','pot','Sligro'],['Kerrie','pot','Sligro'],
+ ['Nootmuskaat','pot','Sligro'],['Knoflookpoeder','pot','Sligro'],['Uienpoeder','pot','Sligro'],
+ ['Italiaanse kruiden','pot','Sligro'],['Tijm','pot','Sligro'],['Oregano','pot','Sligro'],['Basilicum','pot','Sligro'],['Laurier','pot','Sligro']
+],
+'Dessert & bakken':[
+ ['Callebaut chocolademousse melk','zak 800 g','Sligro'],['Callebaut chocolademousse dark','zak 800 g','Sligro'],['Callebaut chocolademousse white','zak 800 g','Sligro'],
+ ['Alsa mousse','pak','Sligro'],['Callebaut mousse','zak','Sligro'],['Puddingpoeder','pak','Sligro'],
+ ['Custard','pak','AH'],['Vanillesuiker','pak','AH'],['Cacaopoeder','pak','Sligro'],['Chocolade','kg','Sligro'],
+ ['Gelatine','pak','AH'],['Dessertsaus','fles','Sligro']
+],
+'Overige voorraad':[
+ ['Eieren','doos','AH'],['Geraspte kaas','zak','AH'],['Kokosmelk','blik','AH'],['Tomaten in blik','blik','AH'],
+ ['Kidneybonen','blik','AH'],['Kikkererwten','blik','AH'],['Augurk','pot','AH']
+]};
+let basisStock=JSON.parse(localStorage.getItem(basisStockStorageKey())||'{}');
+
+function stockInfo(n){
+ for(const items of Object.values(basisStockGroups)){
+   let x=items.find(a=>a[0]===n);
+   if(x)return {name:x[0],unit:x[1],supplier:x[2]};
+ }
+ return {name:n,unit:'stuk',supplier:'AH'};
+}
+function changeStock(n,delta){
+ let v=Math.max(0,(+basisStock[n]||0)+delta);
+ if(v) basisStock[n]=v; else delete basisStock[n];
+ localStorage.setItem(basisStockStorageKey(),JSON.stringify(basisStock));
+ drawBasisStock(); drawOrders();
+}
+function clearStock(){
+ basisStock={}; localStorage.setItem(basisStockStorageKey(),'{}');
+ drawBasisStock(); drawOrders();
+}
+function drawBasisStock(){
+ let el=document.getElementById('basisStock'); if(!el)return;
+ el.innerHTML=Object.entries(basisStockGroups).map(([g,items])=>`
+ <div class="stockGroup"><h4>${g}</h4><div class="stockGrid">
+ ${items.map(([n,u,s])=>`<div class="stockRow"><div><b>${esc(n)}</b><div class="stockMeta">per ${u}<span class="supplierBadge">${s}</span></div></div>
+ <div class="stepper"><button class="secondary" onclick="changeStock('${n.replace(/'/g,"\\'")}',-1)">−</button><b>${basisStock[n]||0}</b><button onclick="changeStock('${n.replace(/'/g,"\\'")}',1)">+</button></div></div>`).join('')}
+ </div></div>`).join('')+`<div class="stockBar"><button class="secondary" onclick="clearStock()">Alles op 0</button></div>`;
+}
+function drawLibrary(){return;}
+function addItem(){let name=prompt('Naam van het nieuwe onderdeel:');if(!name)return;let cat=prompt('Categorie: '+Object.keys(cats).join(', '),activeCat);if(!cats[cat])return alert('Categorie niet herkend.');let def={vegetable:[200,'g'],main:[100,'g'],veg:[100,'g'],starch:[200,'g'],sauce:[50,'ml'],dessert:[150,'g'],vegdessert:[150,'g'],lunch:[250,'ml'],veglunch:[250,'ml'],salad:[0,'recept'],stamppot:[0,'recept']}[cat];library.push({id:'u_'+Date.now(),name,cat,qty:def[0],unit:def[1]});localStorage.setItem('gh11_library',JSON.stringify(library));activeCat=cat;drawLibrary();drawWeek()}
+
+function openManage(){
+ let p=document.getElementById('managePanel');p.classList.add('open');
+ document.getElementById('mCat').innerHTML=Object.entries(cats).map(([k,v])=>`<option value="${k}" ${k===activeCat?'selected':''}>${v}</option>`).join('');
+ document.getElementById('mName').value='';document.getElementById('mMenuName').value='';
+ document.getElementById('mType').value='simple';document.getElementById('mSupplier').value='AH';
+ document.getElementById('mQty').value=1;document.getElementById('mUnit').value='g';
+ document.getElementById('mPackUnit').value='';document.getElementById('mYield').value='';
+ document.getElementById('ingRows').innerHTML='';manageTypeChanged();
+ p.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function closeManage(){document.getElementById('managePanel')?.classList.remove('open')}
+function manageTypeChanged(){
+ let t=document.getElementById('mType').value, pack=t==='package';
+ document.getElementById('packUnitWrap').style.display=pack?'block':'none';
+ document.getElementById('yieldWrap').style.display=pack?'block':'none';
+ document.getElementById('simpleQty').style.display=t==='simple'?'block':'none';
+ document.getElementById('simpleUnit').style.display=t==='simple'?'block':'none';
+ document.getElementById('recipeHelp').style.display=t==='simple'?'none':'block';
+}
+function addIngredientRow(){
+ let row=document.createElement('div');row.className='ingRow';
+ row.innerHTML=`<div class="wide"><label>Ingrediënt</label><input class="iName" placeholder="bijv. Slagroom"></div>
+ <div><label>Hoeveelheid</label><input class="iQty" type="number" min="0" step="0.01"></div>
+ <div><label>Eenheid</label><select class="iUnit"><option>g</option><option>ml</option><option>stuk</option><option>liter</option><option>pak</option><option>zak</option><option>blik</option><option>pot</option></select></div>
+ <div><label>Bestelcategorie</label><select class="iOrderCat">
+   <option value="groente">Groente & fruit</option>
+   <option value="vleesvis">Vlees, vis & vega</option>
+   <option value="zetmeel">Aardappelen, rijst & pasta</option>
+   <option value="zuivel">Zuivel & gekoeld</option>
+   <option value="houdbaar">Houdbaar & koken</option>
+   <option value="diepvries">Diepvries</option>
+   <option value="brood">Brood & lunch</option>
+   <option value="overig">Overig</option>
+ </select></div>
+ <div><label>Leverancier</label><select class="iSupplier"><option>AH</option><option>Sligro</option></select></div>
+ <button type="button" class="secondary" onclick="this.parentElement.remove()">×</button>`;
+ document.getElementById('ingRows').appendChild(row);
+}
+function readIngredientRows(){
+ return [...document.querySelectorAll('#ingRows .ingRow')].map(r=>({
+   name:r.querySelector('.iName').value.trim(),
+   qty:+r.querySelector('.iQty').value||0,
+   unit:r.querySelector('.iUnit').value,
+   orderCategory:r.querySelector('.iOrderCat').value,
+   supplier:r.querySelector('.iSupplier').value
+ })).filter(x=>x.name&&x.qty>0)
+}
+async function saveManagedItem(){
+ let name=document.getElementById('mName').value.trim(); if(!name)return alert('Vul een naam in.');
+ let menuN=document.getElementById('mMenuName').value.trim()||name;
+ let cat=document.getElementById('mCat').value, type=document.getElementById('mType').value, supplier=document.getElementById('mSupplier').value;
+ let qty=+document.getElementById('mQty').value||1, unit=document.getElementById('mUnit').value;
+ let rows=readIngredientRows(), yieldN=+document.getElementById('mYield').value||0;
+ try{
+   if(type==='simple'){
+     await sb('products',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify({name,menu_name:menuN,category:cat,supplier,quantity_per_person:qty,unit,active:true})});
+   }else{
+     if(type==='recipe'&&!rows.length)return alert('Voeg minimaal één ingrediënt toe.');
+     if(type==='package'&&!yieldN)return alert('Vul de opbrengst per verpakking in.');
+     const rr=await sb('recipes',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify({name,menu_name:menuN,category:cat,vegetarian:cat==='veg'||cat==='veglunch'||cat==='vegdessert',active:true})});
+     const rid=rr?.[0]?.id;if(!rid)throw new Error('Recept-id ontbreekt');
+     let ingredients=[];
+     if(type==='package'){
+       ingredients.push({recipe_id:rid,ingredient_name:name,quantity:1/yieldN,unit:'stuk',supplier,order_category:'overig'});
+       rows.forEach(x=>ingredients.push({recipe_id:rid,ingredient_name:x.name,quantity:(x.unit==='liter'?x.qty*1000:x.qty)/yieldN,unit:x.unit==='liter'?'ml':x.unit,supplier:x.supplier,order_category:x.orderCategory}));
+     }else{
+       ingredients=rows.map(x=>({recipe_id:rid,ingredient_name:x.name,quantity:x.qty,unit:x.unit,supplier:x.supplier,order_category:x.orderCategory}));
+     }
+     if(ingredients.length)await sb('recipe_ingredients',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(ingredients)});
+   }
+   alert('Opgeslagen. Het onderdeel staat nu centraal voor iedereen.');
+   openManage();await loadCentralItems();
+ }catch(e){console.error(e);alert('Opslaan mislukt. '+e.message)}
+}
+function removeItem(id){
+ if(!confirm('Dit onderdeel verwijderen?'))return;
+ library=library.filter(x=>x.id!==id);delete customRecipes[id];delete itemMeta[id];delete recipes[id];
+ localStorage.setItem('gh39_library',JSON.stringify(library));
+ localStorage.setItem('gh39_customRecipes',JSON.stringify(customRecipes));
+ localStorage.setItem('gh39_itemMeta',JSON.stringify(itemMeta));
+ drawLibrary();drawWeek();drawOrders();
+}
+function drawNorms(){let el=document.getElementById('norms');if(!el)return;el.innerHTML=Object.entries(norms).map(([k,v])=>`<div class="librow"><div>${k[0].toUpperCase()+k.slice(1)}</div><div class="qty">${v[0]} ${v[1]}</div></div>`).join('')}
+
+const months=['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+function defaultMonday(){
+ let now=new Date(), day=(now.getDay()+6)%7; now.setDate(now.getDate()-day);
+ return now.toISOString().slice(0,10)}
+function weekLabelFromStart(v){let a=new Date(v+'T12:00:00'),b=new Date(a);b.setDate(a.getDate()+6);return `${a.getDate()} ${months[a.getMonth()]} – ${b.getDate()} ${months[b.getMonth()]}`}
+function refreshWeekPicker(){let v=currentWeekStart(),p=document.getElementById('weekPicker'),l=document.getElementById('weekRangeLabel');if(p)p.value=v;if(l)l.textContent=weekLabelFromStart(v)}
+async function changeWeek(v){
+ if(!v)return; let d=new Date(v+'T12:00:00'),dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);v=d.toISOString().slice(0,10);
+ localStorage.setItem('gh10_menuStart',v);let mi=document.getElementById('menuStart');if(mi)mi.value=v;
+ week=JSON.parse(localStorage.getItem(weekStorageKey())||'null')||Object.fromEntries(days.map(x=>[x,blank()]));
+ enabledDays=JSON.parse(localStorage.getItem(enabledStorageKey())||'[]');orderDays=JSON.parse(localStorage.getItem(orderStorageKey())||'[]');
+ refreshWeekPicker();await loadCentralWeek();drawWeek();drawOrders();drawPrep();drawMenu();
+}
+function shiftWeek(delta){let d=new Date(currentWeekStart()+'T12:00:00');d.setDate(d.getDate()+delta);changeWeek(d.toISOString().slice(0,10))}
+function pickWeek(v){changeWeek(v)}
+function initMenuSettings(){
+ let ds=localStorage.getItem('gh10_menuStart')||defaultMonday(), th=localStorage.getItem('gh10_menuTheme')||'summer';
+ let di=document.getElementById('menuStart'),ti=document.getElementById('menuTheme'); if(di)di.value=ds;if(ti)ti.value=th}
+function saveMenuSettings(){let v=document.getElementById('menuStart').value;localStorage.setItem('gh10_menuTheme',document.getElementById('menuTheme').value);changeWeek(v)}
+function dateTitle(){
+ let v=document.getElementById('menuStart')?.value||defaultMonday(), a=new Date(v+'T12:00:00'), b=new Date(a);b.setDate(a.getDate()+6);
+ if(a.getMonth()===b.getMonth())return `${a.getDate()}–${b.getDate()} ${months[b.getMonth()]}`;
+ return `${a.getDate()} ${months[a.getMonth()]} – ${b.getDate()} ${months[b.getMonth()]}`}
+function foodLines(s){
+ let main=menuName(s.main), starch=menuName(s.starch), veg=menuName(s.vegetable), salad=menuName(s.salad), sauce=menuName(s.sauce), stamp=menuName(s.stamppot);
+ let lines=[];
+ if(stamp){if(main)lines.push(main);lines.push(stamp);if(sauce)lines.push(sauce)}
+ else{
+   if(main&&sauce)lines.push(`${main} met ${sauce.toLowerCase()}`);
+   else if(main)lines.push(main);
+   if(starch&&veg)lines.push(`${starch} en ${veg.toLowerCase()}`); else {if(starch)lines.push(starch);if(veg)lines.push(veg)}
+   if(salad)lines.push(salad)
+ }
+ return lines}
+function drawMenu(){
+ initMenuSettings(); let theme=document.getElementById('menuTheme')?.value||'summer';
+ let menuDays=enabledDays.length?days.filter(d=>enabledDays.includes(d)):days;let html=menuDays.map(d=>{let s=stateFor(d),lines=foodLines(s),veg=menuName(s.vegMain);
+ if(!lines.length) lines=['—'];
+ return `<div class="menuDay"><h3>${d}</h3><div class="stars">*******</div><div class="menuFood">${lines.map(x=>`<div>${esc(x)}</div>`).join('')}</div>${veg?`<div class="menuVeg">🌱 ${esc(veg)}</div>`:''}</div>`}).join('');
+ document.getElementById('menuPrint').innerHTML=`<div class="menuSheet ${theme}"><div class="menuTitle">MENU ${dateTitle()}</div><div class="menuDays">${html}</div></div>`}
+
+function printCurrent(){window.print()}
+function mailCurrent(subject){
+ let body='Gastenhuis keukenoverzicht\n\n';
+ if(subject.includes('Bestellijst')) body+='Open de app of bijgevoegde PDF voor de actuele bestellijst.';
+ else if(subject.includes('Menukaart')) body+='Hierbij het menu-overzicht.';
+ else if(subject.includes('Voorbereiden')) body+='Hierbij de voorbereidingslijst.';
+ else body+='Hierbij het keukenoverzicht.';
+ window.location.href=`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+}
+function actionBar(title){return `<div class="actionBar"><button onclick="printCurrent()">🖨️ Print / PDF</button><button class="secondary" onclick="mailCurrent('${title.replace(/'/g,"\\'")}')">✉️ Mailen</button></div>`}
+function showView(btn){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.getElementById(btn.dataset.view).classList.add('active');document.querySelectorAll('.bottom button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');if(btn.dataset.view==='menuView'){initMenuSettings();drawMenu()}if(btn.dataset.view==='orderView')drawOrders();if(btn.dataset.view==='prepView')drawPrep();if(btn.dataset.view==='recipesView'){drawLibrary();drawNorms()}}
+initMenuSettings();refreshWeekPicker();drawWeek();drawOrders();drawPrep();drawLibrary();drawNorms();drawBasisStock();drawMenu();
+if('serviceWorker' in navigator){
+navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{});
+}
+window.addEventListener('load',async()=>{refreshHouseUI();try{openManage();}catch(e){} await loadCentralItems(); await loadCentralWeek();});
+</script></body></html>
