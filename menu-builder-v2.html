@@ -2,46 +2,49 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Gastenhuis – Menubouwer V1</title>
+<title>Gastenhuis – Menubouwer</title>
 <style>
-:root{--bg:#fffaf3;--ink:#34433b;--muted:#718078;--green:#6f8f72;--sage:#dfe9dc;--peach:#f6d7bd;--yellow:#f6e8a8;--line:#e9e2d8;--card:#fff;--shadow:0 6px 20px #44504412}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Calibri,Arial,sans-serif;font-size:17px}header{background:linear-gradient(135deg,var(--sage),#f8e8d6);padding:20px}header h1{margin:0;font-size:28px}header p{margin:4px 0 0;color:var(--muted)}main{max-width:1050px;margin:auto;padding:18px 16px 80px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:16px}.field{min-width:190px;flex:1}label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:5px}input,select,button{font:inherit}input,select{width:100%;padding:11px;border:1px solid #d8d4cc;border-radius:11px;background:#fff;color:var(--ink)}button{border:0;border-radius:12px;padding:11px 15px;background:var(--green);color:#fff;font-weight:700;cursor:pointer}button.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}button.danger{background:#b96f65}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:var(--shadow)}h2{margin:0 0 12px}.category{border:1px solid var(--line);border-radius:16px;margin:10px 0;overflow:hidden;background:#fff}.cathead{display:flex;justify-content:space-between;align-items:center;padding:13px 15px;background:var(--sage);font-weight:700}.catbody{padding:12px}.rows{display:grid;grid-template-columns:1fr auto;gap:8px}.item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}.item button{padding:7px 10px;background:#fff;color:var(--green);border:1px solid #cbd8c8}.empty{color:var(--muted);padding:8px 0}.saved{display:grid;gap:10px}.savedMenu{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff}.small{font-size:13px;color:var(--muted)}.pill{display:inline-block;background:var(--yellow);border-radius:999px;padding:4px 8px;font-size:12px;margin:3px 3px 0 0}.actions{display:flex;gap:8px;flex-wrap:wrap}.status{min-height:22px;color:var(--green);font-weight:700}@media(max-width:650px){.savedMenu{grid-template-columns:1fr}.rows{grid-template-columns:1fr}.field{min-width:100%}}
+:root{--bg:#fffaf3;--ink:#34433b;--muted:#718078;--green:#6f8f72;--sage:#dfe9dc;--peach:#f6d7bd;--yellow:#f6e8a8;--line:#e9e2d8;--card:#fff}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Calibri,Arial,sans-serif;font-size:17px}header{background:linear-gradient(135deg,var(--sage),#f8e8d6);padding:20px}header h1{margin:0;font-size:28px}header p{margin:4px 0 0;color:var(--muted)}main{max-width:1100px;margin:auto;padding:18px 16px 80px}.top{display:grid;grid-template-columns:1fr 150px auto auto;gap:10px;align-items:end}.field label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:5px}input,button{font:inherit}input{width:100%;padding:11px;border:1px solid #d8d4cc;border-radius:11px;background:#fff;color:var(--ink)}button{border:0;border-radius:11px;padding:10px 14px;background:var(--green);color:#fff;font-weight:700;cursor:pointer}button.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0}.cat{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:10px}.cat h3{margin:0;padding:10px 13px;background:var(--sage);font-size:17px}.choices{display:flex;flex-wrap:wrap;gap:7px;padding:11px}.choices button{background:#fff;color:var(--ink);border:1px solid #d8d4cc;padding:8px 10px}.choices button.on{background:var(--green);color:#fff;border-color:var(--green)}.chosen{padding:0 11px 11px}.pill{display:inline-block;background:var(--yellow);border-radius:999px;padding:5px 9px;margin:3px;font-size:14px}.preview{position:sticky;top:10px}.menu-preview{border:2px solid var(--green);border-radius:16px;padding:16px;background:#fff}.menu-preview h2{margin:0 0 10px}.line{padding:7px 0;border-bottom:1px solid var(--line)}.line:last-child{border:0}.people{font-weight:700}.saved{display:grid;gap:10px}.saveditem{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff;display:flex;justify-content:space-between;gap:10px}.small{font-size:13px;color:var(--muted)}.status{min-height:22px;color:var(--green);font-weight:700;margin-top:8px}@media(max-width:800px){.top,.grid{grid-template-columns:1fr}.preview{position:static}}
 </style>
 </head>
 <body>
 <header><h1>🍽️ Menubouwer</h1><p>Stel een compleet menu samen uit losse onderdelen.</p></header>
 <main>
-<div class="toolbar">
- <div class="field"><label>Naam van het menu</label><input id="menuName" placeholder="Bijv. Kip kerrie – rijst – sperziebonen"></div>
- <button onclick="saveMenu()">💾 Menu opslaan</button>
- <button class="secondary" onclick="clearBuilder()">Nieuw menu</button>
+<div class="top">
+ <div class="field"><label>Naam van het menu</label><input id="name" placeholder="Bijv. Kip kerrie – rijst – sperziebonen"></div>
+ <div class="field"><label>Aantal personen</label><input id="people" type="number" min="1" value="35" oninput="renderPreview()"></div>
+ <button onclick="save()">💾 Opslaan</button><button class="secondary" onclick="nieuw()">Nieuw</button>
 </div>
 <div id="status" class="status"></div>
-<section class="card"><h2>Menu samenstellen</h2><div class="small">Klik op een onderdeel. Je kunt meerdere groenten, bijgerechten of andere onderdelen toevoegen.</div><div id="builder"></div></section>
-<section class="card"><h2>💾 Opgeslagen menu's</h2><div id="saved" class="saved"></div></section>
+<div class="grid">
+<section class="card"><h2>Menu samenstellen</h2><div class="small">Klik onderdelen aan. Groenten en andere meervoudige onderdelen kunnen meerdere keren.</div><div id="builder"></div></section>
+<section class="card preview"><div class="menu-preview"><h2 id="previewName">Nieuw menu</h2><div class="people">👥 <span id="previewPeople">35</span> personen</div><div id="previewLines"></div></div></section>
+</div>
+<section class="card"><h2>💾 Opgeslagen menu's</h2><div id="saved"></div></section>
 </main>
 <script>
 const DB={
- '🥪 Lunch':['Krentenbol','Sauzijzenbroodje','Kroket','Kaassoufflé','Eiersalade','Soep','Pasteitje','Broodmaaltijd'],
- '🥩 Vlees':['Kip kerrie','Kip ketjap','Schnitzel','Hachee','Gehaktbal','Hamburger','Kip in tomatensaus','Stoofvlees'],
- '🐟 Vis':['Zalm','Witvis','Vissticks','Kabeljauw','Tonijn'],
- '🥦 Groenten':['Sperziebonen','Broccoli','Worteltjes','Rode kool','Bloemkool','Ratatouille','Bietjes','Witlof','Doperwten'],
- '🥔 Aardappel / rijst / pasta':['Aardappelen','Krieltjes','Aardappelpuree','Rijst','Volkoren rijst','Pasta','Macaroni','Noodles'],
- '🥣 Saus':['Jus','Kerriesaus','Boursinsaus','Roomsaus','Tomatensaus','Champignonsaus','Satésaus'],
- '🥗 Salade':['Gemengde salade','Komkommersalade','Tomatensalade','Rauwkost'],
- '🍨 Desserts':['Vanillevla','Chocoladevla','Yoghurt','Kwark','Fruitsalade','IJs','Advocaatmousse','Bavarois'],
- '🌱 Vegetarisch':['Vegetarische balletjes','Vegetarische schnitzel','Groenteburger','Vegetarische curry','Courgette-tomaat','Portobello']
-};
-let selections={};
-const multi=new Set(['🥦 Groenten','🥔 Aardappel / rijst / pasta','🥣 Saus','🥗 Salade']);
-function esc(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function render(){const b=document.getElementById('builder');b.innerHTML='';Object.keys(DB).forEach(cat=>{if(!(cat in selections))selections[cat]=[];const sec=document.createElement('div');sec.className='category';const selected=selections[cat];sec.innerHTML=`<div class="cathead"><span>${cat}</span><span class="small">${selected.length?selected.length+' gekozen':'nog niets gekozen'}</span></div><div class="catbody"><div class="rows">${DB[cat].map(x=>`<button class="secondary" onclick="pick('${esc(cat)}','${esc(x)}')">${selected.includes(x)?'✓ ':''}${esc(x)}</button>`).join('')}</div><div class="item"><span><b>Gekozen:</b> ${selected.length?selected.map(x=>`<span class="pill">${esc(x)}</span>`).join(''):'—'}</span>${selected.length?`<button onclick="clearCat('${esc(cat)}')">wis</button>`:''}</div></div>`;b.appendChild(sec)})}
-function pick(cat,item){if(multi.has(cat)){if(!selections[cat].includes(item))selections[cat].push(item);else selections[cat]=selections[cat].filter(x=>x!==item)}else selections[cat]=[item];render()}
-function clearCat(cat){selections[cat]=[];render()}
-function clearBuilder(){selections={};document.getElementById('menuName').value='';document.getElementById('status').textContent='';render()}
-function saveMenu(){const name=document.getElementById('menuName').value.trim();if(!name){alert('Geef het menu eerst een naam.');return}const parts={};Object.entries(selections).forEach(([k,v])=>{if(v.length)parts[k]=[...v]});if(!Object.keys(parts).length){alert('Kies eerst onderdelen voor het menu.');return}const menus=JSON.parse(localStorage.getItem('gastenhuis_menus_v1')||'[]');menus.unshift({id:Date.now(),name,parts});localStorage.setItem('gastenhuis_menus_v1',JSON.stringify(menus));document.getElementById('status').textContent='✓ Menu opgeslagen';renderSaved()}
-function renderSaved(){const el=document.getElementById('saved'),menus=JSON.parse(localStorage.getItem('gastenhuis_menus_v1')||'[]');if(!menus.length){el.innerHTML='<div class="empty">Nog geen menu\'s opgeslagen.</div>';return}el.innerHTML=menus.map(m=>`<div class="savedMenu"><div><b>${esc(m.name)}</b><div>${Object.values(m.parts).flat().map(x=>`<span class="pill">${esc(x)}</span>`).join('')}</div></div><div class="actions"><button onclick="loadMenu(${m.id})">Openen</button><button class="danger" onclick="deleteMenu(${m.id})">Verwijderen</button></div></div>`).join('')}
-function loadMenu(id){const menus=JSON.parse(localStorage.getItem('gastenhuis_menus_v1')||'[]'),m=menus.find(x=>x.id===id);if(!m)return;selections={};Object.keys(DB).forEach(k=>selections[k]=m.parts[k]?[...m.parts[k]]:[]);document.getElementById('menuName').value=m.name;document.getElementById('status').textContent='✓ Menu geopend — je kunt het wijzigen';render();window.scrollTo({top:0,behavior:'smooth'})}
-function deleteMenu(id){if(!confirm('Dit menu verwijderen?'))return;const menus=JSON.parse(localStorage.getItem('gastenhuis_menus_v1')||'[]').filter(x=>x.id!==id);localStorage.setItem('gastenhuis_menus_v1',JSON.stringify(menus));renderSaved()}
-render();renderSaved();
+'🥪 Lunch':['Krentenbol','Sauzijzenbroodje','Kroket','Kaassoufflé','Eiersalade','Soep','Pasteitje','Broodmaaltijd'],
+'🥩 Vlees':['Kip kerrie','Kip ketjap','Schnitzel','Hachee','Gehaktbal','Hamburger','Kip in tomatensaus','Stoofvlees'],
+'🐟 Vis':['Zalm','Witvis','Vissticks','Kabeljauw','Tonijn'],
+'🥦 Groenten':['Sperziebonen','Broccoli','Worteltjes','Rode kool','Bloemkool','Ratatouille','Bietjes','Witlof','Doperwten'],
+'🥔 Aardappel / rijst / pasta':['Aardappelen','Krieltjes','Aardappelpuree','Rijst','Volkoren rijst','Pasta','Macaroni','Noodles'],
+'🥣 Saus':['Jus','Kerriesaus','Boursinsaus','Roomsaus','Tomatensaus','Champignonsaus','Satésaus'],
+'🥗 Salade':['Gemengde salade','Komkommersalade','Tomatensalade','Rauwkost'],
+'🍨 Dessert':['Vanillevla','Chocoladevla','Yoghurt','Kwark','Fruitsalade','IJs','Advocaatmousse','Bavarois'],
+'🌱 Vegetarisch':['Vegetarische balletjes','Vegetarische schnitzel','Groenteburger','Vegetarische curry','Courgette-tomaat','Portobello']};
+const multi=new Set(['🥦 Groenten','🥔 Aardappel / rijst / pasta','🥣 Saus','🥗 Salade']);let sel={};
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function init(){Object.keys(DB).forEach(k=>sel[k]=[]);render()}
+function render(){const b=document.getElementById('builder');b.innerHTML='';for(const cat in DB){const chosen=sel[cat]||[];const d=document.createElement('div');d.className='cat';d.innerHTML=`<h3>${cat}</h3><div class="choices">${DB[cat].map(x=>`<button class="${chosen.includes(x)?'on':''}" data-cat="${esc(cat)}" data-item="${esc(x)}">${chosen.includes(x)?'✓ ':''}${esc(x)}</button>`).join('')}</div><div class="chosen">${chosen.length?chosen.map(x=>`<span class="pill">${esc(x)}</span>`).join(''):'<span class="small">Nog niets gekozen</span>'}</div>`;b.appendChild(d)}b.querySelectorAll('.choices button').forEach(btn=>btn.onclick=()=>pick(btn.dataset.cat,btn.dataset.item));renderPreview()}
+function pick(cat,item){if(multi.has(cat)){sel[cat]=sel[cat].includes(item)?sel[cat].filter(x=>x!==item):[...sel[cat],item]}else sel[cat]=[item];render()}
+function renderPreview(){const name=document.getElementById('name').value.trim()||'Nieuw menu',people=document.getElementById('people').value||35;document.getElementById('previewName').textContent=name;document.getElementById('previewPeople').textContent=people;document.getElementById('previewLines').innerHTML=Object.entries(sel).filter(([,v])=>v.length).map(([k,v])=>`<div class="line"><b>${esc(k)}</b><br>${v.map(esc).join(' · ')}</div>`).join('')||'<div class="small">Kies hierboven onderdelen.</div>'}
+document.getElementById('name').oninput=renderPreview;
+function save(){const name=document.getElementById('name').value.trim();if(!name){alert('Geef het menu een naam.');return}if(!Object.values(sel).some(v=>v.length)){alert('Kies eerst onderdelen.');return}const menus=JSON.parse(localStorage.getItem('gastenhuis_menus_v2')||'[]');menus.unshift({id:Date.now(),name,people:Number(document.getElementById('people').value)||35,sel});localStorage.setItem('gastenhuis_menus_v2',JSON.stringify(menus));document.getElementById('status').textContent='✓ Menu opgeslagen';renderSaved()}
+function renderSaved(){const menus=JSON.parse(localStorage.getItem('gastenhuis_menus_v2')||'[]');document.getElementById('saved').innerHTML=menus.length?menus.map(m=>`<div class="saveditem"><div><b>${esc(m.name)}</b> <span class="small">(${m.people} personen)</span><br>${Object.values(m.sel).flat().map(x=>`<span class="pill">${esc(x)}</span>`).join('')}</div><div><button onclick="load(${m.id})">Openen</button> <button class="secondary" onclick="del(${m.id})">Verwijderen</button></div></div>`).join(''):'<div class="small">Nog geen opgeslagen menu’s.</div>'}
+function load(id){const m=JSON.parse(localStorage.getItem('gastenhuis_menus_v2')||'[]').find(x=>x.id===id);if(!m)return;sel={};Object.keys(DB).forEach(k=>sel[k]=m.sel[k]?[...m.sel[k]]:[]);document.getElementById('name').value=m.name;document.getElementById('people').value=m.people;document.getElementById('status').textContent='✓ Menu geopend — je kunt het wijzigen';render()}
+function del(id){const menus=JSON.parse(localStorage.getItem('gastenhuis_menus_v2')||'[]').filter(x=>x.id!==id);localStorage.setItem('gastenhuis_menus_v2',JSON.stringify(menus));renderSaved()}
+function nieuw(){document.getElementById('name').value='';document.getElementById('people').value=35;document.getElementById('status').textContent='';init()}
+init();renderSaved();
 </script>
 </body></html>
