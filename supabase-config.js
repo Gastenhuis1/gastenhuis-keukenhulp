@@ -1,0 +1,1 @@
+window.GASTENHUIS_SUPABASE={url:'https://cttotbzkcluauzzgnybh.supabase.co',key:'sb_publishable_k3vjLo3RzAfyi8mhz7ppKA_9Y1XxRTX'};
